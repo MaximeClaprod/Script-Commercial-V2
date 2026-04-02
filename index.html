@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scripts Commercial — C.lechantier</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2ed;
+  --surface: #ffffff;
+  --surface2: #f0ece5;
+  --border: #e2ddd6;
+  --ink: #1a1814;
+  --muted: #8c8278;
+  --accent: #d4410b;
+  --accent2: #2563eb;
+  --accent3: #059669;
+  --tag-irve: #2563eb;
+  --tag-btp: #d4410b;
+  --tag-r2: #7c3aed;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Cabinet Grotesk', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+/* TOP NAV — MODULE SWITCHER */
+.module-nav {
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  gap: 0;
+  justify-content: space-between;
+}
+.module-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: white;
+  padding: 18px 24px 18px 0;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  margin-right: 8px;
+}
+.logo span { color: var(--accent); font-style: italic; }
+.module-btn {
+  padding: 18px 22px;
+  border: none;
+  background: none;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.module-btn:hover { color: rgba(255,255,255,0.8); }
+.module-btn.active { color: white; border-bottom-color: var(--accent); }
+.module-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+.badge-cc { background: rgba(212,65,11,0.25); color: #f97316; }
+.badge-r1 { background: rgba(37,99,235,0.25); color: #60a5fa; }
+.badge-r2 { background: rgba(124,58,237,0.25); color: #a78bfa; }
+.header-sub { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* MODULES */
+.module { display: none; }
+.module.active { display: flex; flex-direction: column; height: calc(100vh - 57px); }
+
+/* PERSONA TABS */
+.persona-nav {
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.persona-btn {
+  padding: 14px 18px;
+  border: none;
+  background: none;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.persona-btn:hover { color: var(--ink); }
+.persona-btn.active { color: var(--ink); border-bottom-color: var(--accent); }
+.persona-tag { font-size: 10px; padding: 2px 6px; border-radius: 20px; font-weight: 700; }
+.tag-irve { background: rgba(37,99,235,0.12); color: var(--tag-irve); }
+.tag-btp  { background: rgba(212,65,11,0.12); color: var(--tag-btp); }
+.tag-r2t  { background: rgba(124,58,237,0.12); color: var(--tag-r2); }
+
+/* LAYOUT */
+.module-body { display: flex; flex: 1; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 14px 0;
+}
+.step-item {
+  padding: 10px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: background 0.15s;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+.step-item:hover { background: var(--surface2); }
+.step-item.active { background: var(--surface2); border-left-color: var(--accent); }
+.step-item.completed .step-circle { background: var(--accent3); border-color: var(--accent3); color: white; }
+.step-circle {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  background: var(--surface);
+}
+.step-info { flex: 1; min-width: 0; }
+.step-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+.step-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-top: 1px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.step-connector {
+  position: absolute;
+  left: 30px;
+  bottom: -8px;
+  width: 2px;
+  height: 8px;
+  background: var(--border);
+  z-index: 1;
+}
+
+/* CONTENT */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 36px;
+  max-width: 820px;
+}
+.step-view { display: none; }
+.step-view.active { display: block; }
+
+/* STEP CARD */
+.step-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 22px; }
+.step-emoji-big {
+  width: 48px; height: 48px;
+  background: var(--ink);
+  color: white;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.step-type { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 4px; }
+.step-name { font-family: 'Instrument Serif', serif; font-size: 26px; line-height: 1.1; letter-spacing: -0.5px; }
+
+/* Script box */
+.script-box {
+  background: var(--ink);
+  color: #f5f2ed;
+  border-radius: 12px;
+  padding: 22px 26px;
+  margin-bottom: 18px;
+  position: relative;
+}
+.script-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(245,242,237,0.4); margin-bottom: 10px; }
+.script-text { font-family: 'Instrument Serif', serif; font-size: 17px; line-height: 1.65; color: #f5f2ed; }
+.script-text em { color: #fbbf24; font-style: normal; font-weight: 600; }
+.copy-btn {
+  position: absolute; top: 14px; right: 14px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px; color: rgba(255,255,255,0.6); font-size: 11px;
+  font-family: 'Cabinet Grotesk', sans-serif; font-weight: 600;
+  padding: 4px 9px; cursor: pointer; transition: all 0.2s;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+
+/* Tips */
+.tips-box {
+  background: rgba(37,99,235,0.06);
+  border: 1px solid rgba(37,99,235,0.15);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+}
+.tips-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent2); margin-bottom: 8px; }
+.tip-item { display: flex; gap: 8px; font-size: 13px; line-height: 1.5; color: #1e40af; margin-bottom: 5px; }
+.tip-item:last-child { margin-bottom: 0; }
+.tip-dot { color: var(--accent2); flex-shrink: 0; margin-top: 2px; }
+
+/* Branches */
+.branches-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+.branches { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+.branch-btn {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px 16px; text-align: left; cursor: pointer;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; font-weight: 600;
+  color: var(--ink); transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;
+}
+.branch-btn:hover { border-color: var(--accent); background: rgba(212,65,11,0.03); }
+.branch-arrow { color: var(--muted); font-size: 18px; transition: transform 0.2s; }
+.branch-btn:hover .branch-arrow { transform: translateX(3px); color: var(--accent); }
+
+/* Objections */
+.objections-grid { display: flex; flex-direction: column; gap: 10px; }
+.objection-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.objection-trigger { padding: 12px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 14px; transition: background 0.15s; }
+.objection-trigger:hover { background: var(--surface2); }
+.objection-badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; background: rgba(212,65,11,0.1); color: var(--accent); font-weight: 700; }
+.objection-body { display: none; padding: 14px 16px; border-top: 1px solid var(--border); background: var(--surface2); }
+.objection-body.open { display: block; }
+.objection-response { font-family: 'Instrument Serif', serif; font-size: 16px; line-height: 1.6; color: var(--ink); margin-bottom: 8px; }
+.objection-tip { font-size: 12px; color: var(--muted); border-left: 3px solid var(--border); padding-left: 10px; margin-top: 8px; }
+
+/* Checklist */
+.checklist { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.check-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.15s; font-size: 14px; }
+.check-item:hover { border-color: var(--accent); }
+.check-item.checked { background: rgba(5,150,105,0.06); border-color: rgba(5,150,105,0.3); }
+.check-box { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.15s; }
+.check-item.checked .check-box { background: var(--accent3); border-color: var(--accent3); color: white; }
+
+/* Nav buttons */
+.step-nav { display: flex; gap: 10px; margin-top: 10px; padding-top: 22px; border-top: 1px solid var(--border); }
+.nav-btn { padding: 9px 18px; border-radius: 8px; font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; }
+.nav-prev { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+.nav-prev:hover { color: var(--ink); }
+.nav-next { background: var(--ink); color: white; margin-left: auto; }
+.nav-next:hover { background: var(--accent); }
+.nav-reset { background: rgba(212,65,11,0.1); color: var(--accent); border: 1px solid rgba(212,65,11,0.2); }
+.nav-reset:hover { background: rgba(212,65,11,0.2); }
+
+/* Progress bar */
+.progress-bar { height: 3px; background: var(--border); position: relative; overflow: hidden; flex-shrink: 0; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; }
+
+/* Info block for R1/R2 intro */
+.intro-card {
+  background: linear-gradient(135deg, rgba(124,58,237,0.06) 0%, rgba(37,99,235,0.06) 100%);
+  border: 1px solid rgba(124,58,237,0.15);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 22px;
+}
+.intro-card-r1 {
+  background: linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(5,150,105,0.06) 100%);
+  border: 1px solid rgba(37,99,235,0.2);
+}
+.intro-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.intro-title-r1 { color: var(--accent2); }
+.intro-title-r2 { color: var(--tag-r2); }
+.intro-text { font-size: 14px; line-height: 1.6; color: var(--muted); }
+.intro-text strong { color: var(--ink); }
+
+/* Section title */
+.section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; margin-top: 4px; }
+
+/* Devis bloc — R2 specific */
+.offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+.offer-card {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.offer-card:hover { border-color: var(--tag-r2); }
+.offer-card.selected { border-color: var(--tag-r2); background: rgba(124,58,237,0.04); }
+.offer-name { font-size: 13px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.offer-price { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--tag-r2); margin-bottom: 8px; }
+.offer-price small { font-size: 11px; color: var(--muted); font-family: 'Cabinet Grotesk', sans-serif; }
+.offer-items { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.offer-badge {
+  position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+  background: var(--tag-r2); color: white; font-size: 10px; font-weight: 700;
+  padding: 2px 10px; border-radius: 20px; white-space: nowrap;
+}
+
+/* Flag system */
+.flags-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.flag-btn {
+  padding: 8px 14px; border-radius: 8px; font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 12px; font-weight: 700; cursor: pointer; border: 1.5px solid;
+  transition: all 0.2s;
+}
+.flag-green { border-color: rgba(5,150,105,0.3); color: var(--accent3); background: rgba(5,150,105,0.06); }
+.flag-green:hover, .flag-green.active { background: rgba(5,150,105,0.15); }
+.flag-orange { border-color: rgba(251,191,36,0.4); color: #d97706; background: rgba(251,191,36,0.06); }
+.flag-orange:hover, .flag-orange.active { background: rgba(251,191,36,0.15); }
+.flag-red { border-color: rgba(212,65,11,0.3); color: var(--accent); background: rgba(212,65,11,0.06); }
+.flag-red:hover, .flag-red.active { background: rgba(212,65,11,0.15); }
+
+/* ROI calc */
+.roi-block {
+  background: var(--ink);
+  color: white;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 18px;
+}
+.roi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+.roi-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; }
+.roi-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.roi-label-text { color: rgba(255,255,255,0.6); }
+.roi-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #34d399; }
+.roi-value.cost { color: #f87171; }
+.roi-input {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  padding: 4px 8px;
+  width: 80px;
+  outline: none;
+  text-align: right;
+}
+.roi-input:focus { border-color: #fbbf24; }
+
+/* Edit mode inline */
+.edit-btn {
+  position: absolute; top: 14px; right: 72px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px; color: rgba(255,255,255,0.6); font-size: 11px;
+  font-family: 'Cabinet Grotesk', sans-serif; font-weight: 600;
+  padding: 4px 9px; cursor: pointer; transition: all 0.2s;
+}
+.edit-btn:hover { background: rgba(255,200,0,0.2); color: #fbbf24; border-color: rgba(255,200,0,0.3); }
+.edit-btn.active { background: rgba(5,150,105,0.2); color: #34d399; border-color: rgba(5,150,105,0.3); }
+.script-textarea {
+  width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; color: #f5f2ed;
+  font-family: 'Instrument Serif', serif; font-size: 17px; line-height: 1.65;
+  padding: 12px; resize: vertical; min-height: 120px; outline: none; margin-top: 4px;
+}
+.script-textarea:focus { border-color: #fbbf24; }
+.edit-hint { font-size: 11px; color: rgba(245,242,237,0.35); margin-top: 8px; font-family: 'Cabinet Grotesk', sans-serif; }
+/* Edit panel */
+.edit-panel {
+  display: none; background: var(--surface); border: 2px solid var(--accent2);
+  border-radius: 14px; padding: 24px; margin-bottom: 24px;
+}
+.edit-panel.open { display: block; }
+.edit-panel-title {
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--accent2); text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+}
+.edit-section { margin-bottom: 18px; }
+.edit-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+.edit-input {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; color: var(--ink);
+  background: var(--bg); outline: none; transition: border-color 0.2s;
+}
+.edit-input:focus { border-color: var(--accent2); }
+.edit-textarea {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: 'Instrument Serif', serif; font-size: 16px; line-height: 1.6;
+  color: var(--ink); background: var(--bg); outline: none; resize: vertical;
+  min-height: 100px; transition: border-color 0.2s;
+}
+.edit-textarea:focus { border-color: var(--accent2); }
+.edit-list-item { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
+.edit-list-item input, .edit-list-item textarea {
+  flex: 1; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 7px;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px; color: var(--ink);
+  background: var(--bg); outline: none;
+}
+.edit-list-item input:focus { border-color: var(--accent2); }
+.edit-del-btn {
+  width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border);
+  background: none; color: var(--muted); cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.15s; margin-top: 2px;
+}
+.edit-del-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(212,65,11,0.05); }
+.edit-add-btn {
+  padding: 7px 14px; border-radius: 7px; border: 1.5px dashed var(--border); background: none;
+  color: var(--muted); font-family: 'Cabinet Grotesk', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; margin-top: 4px; width: 100%;
+}
+.edit-add-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.edit-save-btn {
+  padding: 11px 24px; border-radius: 8px; border: none; background: var(--accent2); color: white;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; margin-top: 20px; width: 100%;
+}
+.edit-save-btn:hover { background: #1d4ed8; }
+.edit-step-actions { display: flex; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.edit-danger-btn {
+  padding: 8px 16px; border-radius: 7px; border: 1px solid rgba(212,65,11,0.3);
+  background: rgba(212,65,11,0.06); color: var(--accent);
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.edit-danger-btn:hover { background: rgba(212,65,11,0.15); }
+.branch-target-input { width: 90px !important; flex: none !important; font-size: 11px; color: var(--muted); }
+.nav-edit { background: rgba(37,99,235,0.1); color: var(--accent2); border: 1px solid rgba(37,99,235,0.2); }
+.nav-edit:hover { background: rgba(37,99,235,0.2); }
+.nav-edit.editing { background: rgba(5,150,105,0.1); color: var(--accent3); border-color: rgba(5,150,105,0.3); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Toast */
+.toast-el { position:fixed; bottom:24px; right:24px; background:var(--ink); color:white; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:600; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,0.2); }
+
+@media (max-width: 768px) {
+  .module-body { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; padding: 8px; gap: 4px; }
+  .step-item { flex-direction: column; align-items: center; padding: 8px; min-width: 70px; border-left: none; border-bottom: 3px solid transparent; }
+  .step-item.active { border-bottom-color: var(--accent); border-left: none; }
+  .step-connector { display: none; }
+  .step-title { display: none; }
+  .content { padding: 18px; }
+  .module-nav, .persona-nav { padding-left: 16px; padding-right: 16px; }
+  .offer-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="module-nav">
+  <div class="module-nav-left">
+    <div class="logo">C.<span>lechantier</span></div>
+    <button class="module-btn active" onclick="switchModule('cc')" id="btn-cc">
+      📞 Cold Calling <span class="module-badge badge-cc">CC</span>
+    </button>
+    <button class="module-btn" onclick="switchModule('r1')" id="btn-r1">
+      🔍 Découverte R1 <span class="module-badge badge-r1">R1</span>
+    </button>
+    <button class="module-btn" onclick="switchModule('r2')" id="btn-r2">
+      🤝 Présentation R2 <span class="module-badge badge-r2">R2</span>
+    </button>
+  </div>
+  <div class="header-sub">Maxime Dubos · C.lechantier</div>
+</nav>
+
+<!-- ==================== MODULE COLD CALLING ==================== -->
+<div class="module active" id="module-cc">
+  <div class="progress-bar"><div class="progress-fill" id="cc-progress" style="width:0%"></div></div>
+  <nav class="persona-nav" id="cc-persona-nav"></nav>
+  <div class="module-body">
+    <aside class="sidebar" id="cc-sidebar"></aside>
+    <div class="content" id="cc-content"></div>
+  </div>
+</div>
+
+<!-- ==================== MODULE R1 ==================== -->
+<div class="module" id="module-r1">
+  <div class="progress-bar"><div class="progress-fill" id="r1-progress" style="width:0%"></div></div>
+  <nav class="persona-nav" id="r1-persona-nav"></nav>
+  <div class="module-body">
+    <aside class="sidebar" id="r1-sidebar"></aside>
+    <div class="content" id="r1-content"></div>
+  </div>
+</div>
+
+<!-- ==================== MODULE R2 ==================== -->
+<div class="module" id="module-r2">
+  <div class="progress-bar"><div class="progress-fill" id="r2-progress" style="width:0%"></div></div>
+  <nav class="persona-nav" id="r2-persona-nav"></nav>
+  <div class="module-body">
+    <aside class="sidebar" id="r2-sidebar"></aside>
+    <div class="content" id="r2-content"></div>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// DATA — COLD CALLING
+// =====================================================================
+const CC_PERSONAS = [
+  {
+    id: 'pm-irve',
+    emoji: '⚡',
+    label: 'PM IRVE',
+    tag: 'IRVE',
+    tagClass: 'tag-irve',
+    steps: [
+      { id: 'accroche', emoji: '📞', type: 'Départ', title: 'Accroche', script: `Oui, bonjour <em>M./Mme [Nom]</em> ? Je suis Maxime Dubos de C.lechantier — alors voilà c'est un appel de prospection, j'espère que vous allez pas balancer votre téléphone par la fenêtre et me laisser une petite minute ?`, tips: ["Ton direct, assumé, légèrement décalé — pas corporate", "Attendre la réponse, ne pas enchaîner immédiatement", "Si répondeur : ne pas laisser de message, rappeler"], branches: [{ label: "✅ Oui, je vous écoute", to: 'pitch' }, { label: "⏱ Pas le temps", to: 'pas-le-temps' }] },
+      { id: 'pas-le-temps', emoji: '⏱', type: 'Objection rapide', title: 'Pas le temps', script: `Je comprends — en 10 secondes : j'aide les project managers IRVE à suivre leurs chantiers à distance sans dépendre des retours installateurs. Est-ce que ça vaut le coup que je vous rappelle quand vous avez 5 minutes ?`, tips: ["Ne pas insister si refus net — noter 'À rappeler'", "Si oui : fixer un créneau précis immédiatement", "Ne jamais demander 'quand est-ce que je peux rappeler ?' → proposer deux créneaux"], branches: [{ label: "Oui, rappelez-moi", to: 'fixer-creneau' }, { label: "Non, pas intéressé", to: 'fin' }] },
+      { id: 'pitch', emoji: '🎯', type: 'Pitch', title: 'Pitch & Découverte', script: `On travaille avec des PMs IRVE chez <em>Electra, BP Pulse</em> — on les aide à gérer 50% de projets en plus sans recrutement, sans avoir à harceler les installateurs pour avoir un état des lieux. Est-ce que c'est un sujet qui vous parle aujourd'hui ? Pour voir si c'est pertinent — comment vous suivez l'avancement de vos chantiers en ce moment ?`, tips: ["Citer les références IMMÉDIATEMENT — ça crédibilise", "Poser UNE question, se taire et écouter", "Objectif : comprendre son organisation actuelle, pas vendre"], branches: [{ label: "WhatsApp / photos installateurs", to: 'whatsapp' }, { label: "Je me déplace sur le terrain", to: 'deplacements' }, { label: "On a un outil / logiciel", to: 'outil' }, { label: "Autre organisation", to: 'preciser' }] },
+      { id: 'whatsapp', emoji: '📱', type: 'Découverte', title: 'WhatsApp / photos', script: `Donc vous dépendez de ce que les installateurs vous envoient — et si quelqu'un ne répond pas ou envoie une photo au mauvais moment, vous n'avez pas de vision réelle de l'avancement ?`, tips: ["Reformuler en miroir — il doit dire 'oui c'est ça'", "Ne pas commenter, enchaîner sur les difficultés"], branches: [{ label: "→ Creuser les difficultés", to: 'difficultes' }] },
+      { id: 'deplacements', emoji: '🚗', type: 'Découverte', title: 'Déplacements terrain', script: `Vous vous déplacez pour avoir une vision réelle — combien de chantiers vous visitez par semaine, et sur quelle zone ?`, tips: ["Chercher à quantifier — temps, km, chantiers", "Demander si ça lui laisse du temps pour prendre plus de projets"], branches: [{ label: "→ Creuser les difficultés", to: 'difficultes' }] },
+      { id: 'outil', emoji: '🛠', type: 'Découverte', title: 'Outil / logiciel', script: `Cet outil vous donne une vision automatique du terrain, ou c'est du reporting saisi manuellement par les installateurs ?`, tips: ["Si reporting manuel : creuser la fiabilité", "Ne pas critiquer l'outil — chercher ses limites"], branches: [{ label: "→ Creuser les difficultés", to: 'difficultes' }] },
+      { id: 'preciser', emoji: '🪞', type: 'Découverte', title: 'Préciser', script: `Et au quotidien, vous manquez parfois d'information sur un chantier — ou ça tourne bien de votre côté ?`, tips: ["Question ouverte neutre", "Laisser parler, prendre des notes"], branches: [{ label: "→ Creuser les difficultés", to: 'difficultes' }] },
+      { id: 'difficultes', emoji: '🔥', type: 'Qualification', title: 'Difficultés', checklist: ["Vous devez souvent relancer les installateurs pour savoir où ils en sont ?", "Il vous arrive de découvrir un retard trop tard pour corriger facilement ?", "Combien de projets gérez-vous en parallèle en ce moment ?", "Combien d'heures par semaine sur la coordination et les points d'avancement ?"], script: `Ces questions sont pour mieux cerner votre situation — je veux m'assurer que ce qu'on fait est vraiment adapté avant de vous proposer quoi que ce soit.`, tips: ["4 questions max — ne pas mitrailler", "Quantifier systématiquement : nb projets, heures/semaine", "Si aucun problème réel → disqualifier proprement"], branches: [{ label: "Oui — retards, relances fréquentes", to: 'probleme-confirme' }, { label: "Quelques irritants ponctuels", to: 'creuser' }, { label: "Non, ça tourne bien", to: 'fin' }] },
+      { id: 'creuser', emoji: '🤔', type: 'Approfondissement', title: 'Creuser', script: `Si vous deviez doubler votre portefeuille de projets demain — avec votre organisation actuelle, qu'est-ce qui lâcherait en premier ?`, tips: ["Question de projection — révèle les vraies limites", "Silence après la question"], branches: [{ label: "→ Problème confirmé", to: 'probleme-confirme' }] },
+      { id: 'probleme-confirme', emoji: '✅', type: 'Validation', title: 'Problème confirmé', script: `Donc le vrai sujet, c'est que vous n'avez pas de visibilité fiable sans dépendre des remontées de vos prestataires — et ça bloque votre capacité à prendre plus de volume. C'est bien ça ?`, tips: ["Attendre le 'oui c'est ça' — ne pas enchaîner avant", "Si non → reformuler avec ses propres mots"], branches: [{ label: "→ Conséquences", to: 'consequences' }] },
+      { id: 'consequences', emoji: '📊', type: 'Impact', title: 'Conséquences', script: `Et concrètement, ça a un impact pour vous ? Retards clients, temps perdu à coordonner, ou impossibilité de prendre plus de projets ?`, tips: ["Laisser le prospect quantifier lui-même l'impact", "Plus il chiffre, plus le RDV a de valeur pour lui"], branches: [{ label: "Retards / tensions clients", to: 'solution' }, { label: "Trop de temps en coordination", to: 'solution' }, { label: "Impossible de prendre plus", to: 'solution' }] },
+      { id: 'solution', emoji: '💡', type: 'Solution', title: 'Solution', script: `Ce qu'on fait concrètement : on installe un dispositif de suivi visuel automatisé sur vos chantiers. Photos horodatées automatiques — sans dépendre des installateurs. Vision en temps réel depuis votre bureau. Alertes si retard détecté. Résultat pour des PMs comme vous : <em>+50% de projets gérés avec la même équipe</em>, sans déplacements supplémentaires.`, tips: ["Court — max 30 secondes", "Ne pas tout détailler → garder de la matière pour le RDV", "Enchaîner directement sur le closing"], branches: [{ label: "→ Closing / RDV", to: 'closing' }] },
+      { id: 'closing', emoji: '📅', type: 'Closing', title: 'Closing', script: `Je ne suis pas encore certain que ce soit parfaitement adapté à votre situation — mais ce que vous m'avez décrit ressemble vraiment à ce qu'on aide à résoudre. On prend <em>20 minutes</em> pour regarder un cas concret ensemble, vous jugerez. <em>Jeudi ou vendredi, qu'est-ce qui vous convient ?</em>`, tips: ["Proposer DEUX options — pas 'vous êtes dispo quand ?'", "Après confirmation : 'Je vous envoie l'invite maintenant, restez en ligne que je vérifie que vous l'avez bien reçue'", "Si hésitation : 'Je vous envoie un cas client avant le RDV pour que vous arriviez avec du contexte'"], branches: [{ label: "✅ RDV confirmé", to: 'fin-rdv' }, { label: "Envoyez-moi un mail", to: 'objection-mail' }, { label: "Pas convaincu", to: 'fin' }] },
+      { id: 'objection-mail', emoji: '📧', type: 'Objection', title: 'Envoyez un mail', script: `Bien sûr. Mais vous voulez voir quoi dans ce mail — notre méthodologie, des références clients, un cas concret sur un projet similaire au vôtre ?`, tips: ["Ne jamais envoyer un mail générique", "Identifier CE qu'il veut voir → envoyer ça précisément", "Relancer 2 jours après si pas de réponse"], branches: [{ label: "→ Fixer un créneau de rappel", to: 'fixer-creneau' }] },
+      { id: 'fixer-creneau', emoji: '🗓', type: 'Action', title: 'Fixer un créneau', script: `Pas de problème. Jeudi 10h ou vendredi 14h — lequel vous convient le mieux ?`, tips: ["Toujours deux options précises", "Noter dans le CRM avec la date exacte"], branches: [{ label: "✅ Créneau fixé", to: 'fin-rdv' }] },
+      { id: 'fin-rdv', emoji: '🏆', type: 'Fin — Succès', title: 'RDV confirmé', script: `Parfait. Je vous envoie l'invitation maintenant — restez en ligne une seconde, je veux m'assurer qu'elle n'est pas tombée dans vos spams.`, tips: ["Envoyer l'invite EN DIRECT pendant l'appel", "Statut CRM → RDV Book", "Préparer un cas client à envoyer la veille"], branches: [] },
+      { id: 'fin', emoji: '🔚', type: 'Fin — Disqualifié', title: 'Fin d\'appel', script: `Je comprends, ce n'est pas le bon moment. Bonne continuation M./Mme [Nom].`, tips: ["Rester cordial — le marché est petit", "Mettre le bon statut dans le CRM", "Si 'pas le bon moment' → programmer un rappel dans 3 mois"], branches: [] },
+    ],
+    objections: [
+      { trigger: "J'ai pas le temps / je suis en réunion", response: "Je comprends, on se connaît pas encore. En 10 secondes : j'aide les PMs IRVE à suivre leurs chantiers sans dépendre des installateurs. Ça vaut le coup que je vous rappelle ?", tip: "Proposer immédiatement un créneau précis" },
+      { trigger: "Pas de budget", response: "Donc vous ne rencontrez pas ce problème de visibilité sur vos chantiers ? Parce que si vous le rencontrez, ça veut dire que le coût actuel — en temps, en déplacements — est déjà là.", tip: "Recadrer le budget comme un comparatif de coûts" },
+      { trigger: "Numéro personnel", response: "Je suis désolé de vous appeler sur le perso — j'ai eu ce numéro via un outil de prospection. Mais si je vous appelle, c'est parce qu'on aide des PMs comme vous sur un sujet qui coûte du temps chaque semaine. Ça valait le coup d'essayer, non ?", tip: "Assumer, ne pas s'excuser indéfiniment" },
+      { trigger: "On a déjà quelque chose en interne", response: "Très bien. Ce que vous avez — ça vous donne une vision terrain automatique ou c'est du reporting saisi par vos équipes ?", tip: "Ne pas contre-argumenter — comprendre d'abord ce qu'ils ont" },
+      { trigger: "Envoyez un mail", response: "Bien sûr. Vous voulez voir quoi dans ce mail — nos références, un cas client, ou notre méthodologie ?", tip: "Toujours demander CE qu'il veut voir" },
+    ]
+  },
+  {
+    id: 'resp-irve',
+    emoji: '👥',
+    label: 'Resp. équipes IRVE',
+    tag: 'IRVE',
+    tagClass: 'tag-irve',
+    steps: [
+      { id: 'accroche', emoji: '📞', type: 'Départ', title: 'Accroche', script: `Oui, bonjour <em>M./Mme [Nom]</em> ? Je suis Maxime Dubos de C.lechantier — alors voilà c'est un appel de prospection, j'espère que vous allez pas balancer votre téléphone par la fenêtre et me laisser une petite minute ?`, tips: ["Même accroche — identique pour tous les personas", "Ton décalé, assumé, humain"], branches: [{ label: "✅ Oui, je vous écoute", to: 'pitch' }, { label: "⏱ Pas le temps", to: 'pas-le-temps' }] },
+      { id: 'pas-le-temps', emoji: '⏱', type: 'Objection rapide', title: 'Pas le temps', script: `Je comprends. En une phrase : j'aide les responsables d'équipes IRVE à absorber <em>50% de projets supplémentaires</em> sans recruter, tout en gardant une visibilité globale sur tous les chantiers. Ça vaut le coup que je vous rappelle ?`, tips: ["Chiffrer immédiatement", "Proposer deux créneaux de rappel"], branches: [{ label: "Oui, rappelez-moi", to: 'fixer-creneau' }, { label: "Non, pas intéressé", to: 'fin' }] },
+      { id: 'pitch', emoji: '🎯', type: 'Pitch & Découverte', title: 'Pitch', script: `On travaille avec des responsables d'équipes IRVE — on les aide à absorber 50% de projets supplémentaires sans recrutement, tout en gardant une visibilité claire sur l'ensemble des chantiers. Est-ce que c'est un sujet qui vous parle ? Comment vous avez une vision de l'avancement de tous vos projets aujourd'hui ?`, tips: ["Citer le bénéfice principal d'abord", "UNE question de découverte, attendre"], branches: [{ label: "Reporting de mes équipes", to: 'reporting' }, { label: "Réunions d'avancement", to: 'reunions' }, { label: "Dashboard / outil", to: 'dashboard' }, { label: "Autre", to: 'preciser' }] },
+      { id: 'reporting', emoji: '📊', type: 'Découverte', title: 'Reporting équipes', script: `Ce reporting remonte en temps réel ou c'est plutôt hebdomadaire — et entre deux remontées, si un projet dérape, comment vous le découvrez ?`, tips: ["Deux questions liées — laisser répondre sur les deux"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'reunions', emoji: '🤝', type: 'Découverte', title: 'Réunions', script: `Entre deux réunions, si un projet dérape — comment vous le captez ?`, tips: ["Chercher le 'délai de détection' d'un problème"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'dashboard', emoji: '🛠', type: 'Découverte', title: 'Dashboard', script: `Ce dashboard reflète l'état réel du terrain — ou c'est ce que vos PMs ont saisi ?`, tips: ["Ne pas critiquer — chercher la limite"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'preciser', emoji: '🪞', type: 'Découverte', title: 'Préciser', script: `Et concrètement — vous avez une vision fiable de ce qui se passe sur le terrain entre deux remontées ?`, tips: ["Question neutre, ouverte"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'difficultes', emoji: '🔥', type: 'Qualification', title: 'Difficultés', checklist: ["Il vous arrive de découvrir un problème trop tard sur un projet ?", "Vos PMs passent du temps à faire remonter l'info plutôt qu'à piloter ?", "Si vous absorbiez 30% de projets supplémentaires — votre orga tiendrait ?", "Il y a eu des mauvaises surprises récentes sur des délais ou la qualité ?"], script: `Je vous pose ces questions pour vérifier si ce qu'on fait est vraiment pertinent pour vous — pas la peine de perdre votre temps si ce n'est pas le cas.`, tips: ["Posture humble — on qualifie, on ne vend pas encore", "Si 0 problème → disqualifier"], branches: [{ label: "Visibilité insuffisante", to: 'probleme-confirme' }, { label: "Scalabilité bloquée", to: 'probleme-confirme' }, { label: "Rien de majeur", to: 'fin' }] },
+      { id: 'probleme-confirme', emoji: '✅', type: 'Validation', title: 'Problème confirmé', script: `Donc la croissance est limitée par la capacité de suivi de vos PMs — pas par le nombre de projets disponibles sur le marché ? Et en même temps vous n'avez pas de visibilité fiable entre deux remontées. C'est bien ça ?`, tips: ["Attendre la confirmation avant d'enchaîner"], branches: [{ label: "→ Conséquences", to: 'consequences' }] },
+      { id: 'consequences', emoji: '📊', type: 'Impact', title: 'Conséquences', script: `Et concrètement, comment ça se traduit ? Impact sur les clients, sur les marges, ou sur votre capacité à prendre plus de volume ?`, tips: ["Laisser chiffrer — le prospect valorise lui-même le problème"], branches: [{ label: "Impact clients / réputation", to: 'solution' }, { label: "Impact marges / coûts", to: 'solution' }, { label: "Frein à la croissance", to: 'solution' }] },
+      { id: 'solution', emoji: '💡', type: 'Solution', title: 'Solution', script: `Ce qu'on fait : vos PMs ont une vision en temps réel de chaque chantier depuis leur bureau. Vous avez un dashboard global de tous vos projets. Moins de coordination = vos PMs gèrent plus de projets. Résultat : <em>+50% de projets en simultané sans recrutement</em>, visibilité globale maintenue.`, tips: ["30 secondes max", "Ne pas tout expliquer — garder pour le RDV"], branches: [{ label: "→ Closing", to: 'closing' }] },
+      { id: 'closing', emoji: '📅', type: 'Closing', title: 'Closing', script: `L'objectif de mon appel était juste de vérifier si c'était pertinent — et ce que vous m'avez décrit ressemble vraiment à ce qu'on aide à résoudre. Je vous propose <em>20 minutes</em> pour vous montrer comment des équipes similaires ont résolu ce problème. Vous jugerez par vous-même. <em>Jeudi ou vendredi ?</em>`, tips: ["Deux options — pas de question ouverte", "Envoyer l'invite en direct"], branches: [{ label: "✅ RDV confirmé", to: 'fin-rdv' }, { label: "Envoyez un mail", to: 'objection-mail' }, { label: "Pas convaincu", to: 'fin' }] },
+      { id: 'objection-mail', emoji: '📧', type: 'Objection', title: 'Envoyez un mail', script: `Bien sûr. Vous voulez voir quoi dans ce mail — notre méthodologie, des références, ou un cas client sur une équipe comparable à la vôtre ?`, tips: ["Ne jamais envoyer sans avoir demandé"], branches: [{ label: "→ Fixer un créneau", to: 'fixer-creneau' }] },
+      { id: 'fixer-creneau', emoji: '🗓', type: 'Action', title: 'Fixer un créneau', script: `Pas de problème. Jeudi 10h ou vendredi 14h — lequel vous convient ?`, tips: ["Deux options précises", "Confirmer et noter dans le CRM"], branches: [{ label: "✅ Créneau fixé", to: 'fin-rdv' }] },
+      { id: 'fin-rdv', emoji: '🏆', type: 'Fin — Succès', title: 'RDV confirmé', script: `Parfait. Je vous envoie l'invitation maintenant — restez en ligne, je veux m'assurer qu'elle n'est pas dans vos spams.`, tips: ["Envoyer l'invite en direct", "Statut CRM → RDV Book"], branches: [] },
+      { id: 'fin', emoji: '🔚', type: 'Fin — Disqualifié', title: 'Fin d\'appel', script: `Je comprends tout à fait. Bonne continuation M./Mme [Nom].`, tips: ["Toujours rester cordial", "Mettre le bon statut dans le CRM"], branches: [] },
+    ],
+    objections: [
+      { trigger: "On recrute pour absorber la croissance", response: "Intéressant. Et une fois recrutés, comment vous assurez que ces nouvelles personnes ont une visibilité fiable sur leurs chantiers dès le départ ?", tip: "Ne pas s'opposer — élargir le problème" },
+      { trigger: "Pas de budget", response: "Vous ne rencontrez pas ce problème de visibilité ou de scalabilité ? Parce que si vous le rencontrez, le coût actuel est déjà là — en temps de coordination, en risque de retards.", tip: "Recadrer le budget" },
+      { trigger: "On a déjà un outil", response: "Cet outil vous donne une vision automatique du terrain ou c'est du reporting saisi par vos PMs ?", tip: "Chercher la limite de l'outil existant" },
+    ]
+  },
+  {
+    id: 'dir-travaux',
+    emoji: '🏗',
+    label: 'Dir. Travaux BTP',
+    tag: 'BTP',
+    tagClass: 'tag-btp',
+    steps: [
+      { id: 'accroche', emoji: '📞', type: 'Départ', title: 'Accroche', script: `Oui, bonjour <em>M./Mme [Nom]</em> ? Je suis Maxime Dubos de C.lechantier — alors voilà c'est un appel de prospection, j'espère que vous allez pas balancer votre téléphone par la fenêtre et me laisser une petite minute ?`, tips: ["Ton direct et décalé", "Attendre la réponse"], branches: [{ label: "✅ Oui", to: 'pitch' }, { label: "⏱ Pas le temps", to: 'pas-le-temps' }] },
+      { id: 'pas-le-temps', emoji: '⏱', type: 'Objection rapide', title: 'Pas le temps', script: `Je comprends. En une phrase : j'aide les directeurs travaux à conduire leurs chantiers de façon optimisée — moins de déplacements, des retours terrain sans filtre. Ça vaut le coup que je vous rappelle ?`, tips: ["Quantifier si possible", "Proposer deux créneaux"], branches: [{ label: "Oui, rappelez-moi", to: 'fixer-creneau' }, { label: "Non", to: 'fin' }] },
+      { id: 'pitch', emoji: '🎯', type: 'Pitch & Découverte', title: 'Pitch', script: `On travaille avec des filiales <em>Vinci, Eiffage, Bouygues</em> — on aide les directeurs travaux à optimiser la conduite de leurs chantiers : moins de déplacements, des retours terrain sans filtre, une vision en temps réel de l'avancement. Comment vous suivez vos chantiers aujourd'hui ?`, tips: ["Citer Vinci / références BTP immédiatement", "UNE question, se taire"], branches: [{ label: "Déplacements réguliers", to: 'deplacements' }, { label: "Remontées des équipes", to: 'remontees' }, { label: "Réunions de chantier", to: 'reunions' }, { label: "Autre", to: 'preciser' }] },
+      { id: 'deplacements', emoji: '🚗', type: 'Découverte', title: 'Déplacements', script: `Ces déplacements, c'est combien de chantiers à visiter par semaine — et sur quelle zone géographique ?`, tips: ["Quantifier : km, jours/semaine", "Demander si ça lui laisse du temps pour piloter"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'remontees', emoji: '📡', type: 'Découverte', title: 'Remontées équipes', script: `Ces remontées vous donnent une vision fidèle du terrain — ou il y a parfois des décalages entre ce qu'on vous remonte et la réalité ?`, tips: ["Chercher les doutes sur la fiabilité"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'reunions', emoji: '📅', type: 'Découverte', title: 'Réunions', script: `Entre deux réunions de chantier, si un problème survient — comment vous le captez ?`, tips: ["Chercher le délai entre problème et détection"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'preciser', emoji: '🪞', type: 'Découverte', title: 'Préciser', script: `Et au quotidien — vous avez parfois le sentiment de ne pas avoir une vision suffisamment précise de ce qui se passe vraiment sur le terrain ?`, tips: ["Laisser parler"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'difficultes', emoji: '🔥', type: 'Qualification', title: 'Difficultés', checklist: ["Vous découvrez parfois des problèmes terrain trop tard pour corriger facilement ?", "Vos remontées terrain sont parfois filtrées ou incomplètes ?", "Vous passez du temps sur la route pour des visites qui pourraient être évitées ?", "Vous avez du mal à anticiper les dérives de planning sur plusieurs chantiers ?"], script: `Je pose ces questions pour voir si ce qu'on fait est vraiment pertinent — pas question de vous proposer quelque chose d'inadapté.`, tips: ["Quantifier : nb chantiers, km/semaine", "Chercher un exemple récent de problème découvert tard"], branches: [{ label: "Remontées filtrées / infos tardives", to: 'probleme-confirme' }, { label: "Trop de déplacements", to: 'probleme-confirme' }, { label: "Aucun problème majeur", to: 'fin' }] },
+      { id: 'probleme-confirme', emoji: '✅', type: 'Validation', title: 'Problème confirmé', script: `Donc ce que vous décrivez, c'est un problème de visibilité terrain — vous êtes dépendant soit des déplacements, soit de remontées qui ne reflètent pas forcément la réalité. C'est bien ça ?`, tips: ["Attendre le 'oui c'est ça'"], branches: [{ label: "→ Conséquences", to: 'consequences' }] },
+      { id: 'consequences', emoji: '📊', type: 'Impact', title: 'Conséquences', script: `Et concrètement — ce manque de visibilité, ça se traduit comment ? Des retards, des tensions avec les clients, ou des déplacements qui vous coûtent du temps ?`, tips: ["Laisser chiffrer l'impact"], branches: [{ label: "Retards / tensions", to: 'solution' }, { label: "Déplacements coûteux", to: 'solution' }, { label: "Difficulté d'anticipation", to: 'solution' }] },
+      { id: 'solution', emoji: '💡', type: 'Solution', title: 'Solution', script: `Ce qu'on installe : un dispositif de suivi visuel automatisé directement sur vos chantiers. Vision en temps réel depuis votre bureau. Retours terrain sans filtre — ce que la caméra voit, pas ce qu'on vous dit. Vous ne vous déplacez que quand c'est vraiment nécessaire. Et un historique horodaté pour la gestion des litiges. Résultat : <em>conduite chantier optimisée, moins de déplacements, retours sans filtre.</em>`, tips: ["30 secondes max", "Historique litiges = argument fort pour le BTP"], branches: [{ label: "→ Closing", to: 'closing' }] },
+      { id: 'closing', emoji: '📅', type: 'Closing', title: 'Closing', script: `Ce que vous m'avez décrit ressemble vraiment à ce qu'on aide à résoudre. On prend <em>20 minutes</em> pour regarder comment ça fonctionne sur un chantier BTP — vous jugerez par vous-même. <em>Jeudi ou vendredi ?</em>`, tips: ["Deux options précises", "Envoyer l'invite en direct"], branches: [{ label: "✅ RDV confirmé", to: 'fin-rdv' }, { label: "Envoyez un mail", to: 'objection-mail' }, { label: "Pas convaincu", to: 'fin' }] },
+      { id: 'objection-mail', emoji: '📧', type: 'Objection', title: 'Mail', script: `Bien sûr. Vous voulez voir quoi — nos références BTP, un cas client sur un chantier similaire, ou notre méthodologie ?`, tips: ["Toujours demander ce qu'il veut voir"], branches: [{ label: "→ Fixer un créneau", to: 'fixer-creneau' }] },
+      { id: 'fixer-creneau', emoji: '🗓', type: 'Action', title: 'Créneau', script: `Jeudi 10h ou vendredi 14h — lequel vous convient ?`, tips: ["Deux options précises"], branches: [{ label: "✅ Créneau fixé", to: 'fin-rdv' }] },
+      { id: 'fin-rdv', emoji: '🏆', type: 'Fin — Succès', title: 'RDV confirmé', script: `Parfait. Invite envoyée maintenant — restez en ligne, je vérifie qu'elle n'est pas dans vos spams.`, tips: ["CRM → RDV Book"], branches: [] },
+      { id: 'fin', emoji: '🔚', type: 'Fin', title: 'Fin d\'appel', script: `Je comprends tout à fait. Bonne continuation.`, tips: ["Rester cordial — marché BTP = petit monde"], branches: [] },
+    ],
+    objections: [
+      { trigger: "On gère déjà avec nos chefs de chantier", response: "Vos chefs de chantier vous remontent l'info en temps réel — ou c'est plutôt en fin de journée / semaine ?", tip: "Chercher le délai de remontée" },
+      { trigger: "On a déjà une caméra sur certains chantiers", response: "Ces caméras, elles sont automatiques ou quelqu'un doit déclencher les captations ?", tip: "Différencier suivi passif vs actif" },
+      { trigger: "Pas de budget", response: "Un déplacement de chantier, ça vous coûte combien en temps et en frais — par semaine ?", tip: "Faire calculer le coût actuel" },
+    ]
+  },
+  {
+    id: 'chef-secteur',
+    emoji: '📈',
+    label: 'Chef de secteur',
+    tag: 'BTP',
+    tagClass: 'tag-btp',
+    steps: [
+      { id: 'accroche', emoji: '📞', type: 'Départ', title: 'Accroche', script: `Oui, bonjour <em>M./Mme [Nom]</em> ? Je suis Maxime Dubos de C.lechantier — alors voilà c'est un appel de prospection, j'espère que vous allez pas balancer votre téléphone par la fenêtre et me laisser une petite minute ?`, tips: ["Même accroche universelle"], branches: [{ label: "✅ Oui", to: 'pitch' }, { label: "⏱ Pas le temps", to: 'pas-le-temps' }] },
+      { id: 'pas-le-temps', emoji: '⏱', type: 'Objection rapide', title: 'Pas le temps', script: `Je comprends. En une phrase : j'aide les chefs de secteur à piloter plus de projets sans recrutement, avec une visibilité globale sur tous leurs chantiers. Ça vaut le coup que je vous rappelle ?`, tips: ["Angle rentabilité + volume"], branches: [{ label: "Oui, rappelez-moi", to: 'fixer-creneau' }, { label: "Non", to: 'fin' }] },
+      { id: 'pitch', emoji: '🎯', type: 'Pitch & Découverte', title: 'Pitch', script: `On travaille avec des chefs de secteur IRVE — on les aide à piloter et valoriser plus de projets sans recrutement, avec une visibilité globale sur tous leurs chantiers. Est-ce que c'est un sujet qui vous parle ? Comment vous gardez une vision d'ensemble de tous vos projets aujourd'hui ?`, tips: ["Angle 'piloter + valoriser' = double bénéfice", "UNE question"], branches: [{ label: "Reporting de mes équipes", to: 'reporting' }, { label: "Réunions / points réguliers", to: 'reunions' }, { label: "Outil de pilotage", to: 'outil' }] },
+      { id: 'reporting', emoji: '📊', type: 'Découverte', title: 'Reporting', script: `Ce reporting vous donne une vision en temps réel ou c'est plutôt un suivi décalé — et entre deux remontées, si un projet dérive, comment vous le captez ?`, tips: ["Chercher le délai de détection"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'reunions', emoji: '🤝', type: 'Découverte', title: 'Réunions', script: `Entre deux points, si un chantier dérive — comment vous le découvrez ?`, tips: ["Chercher les angles morts"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'outil', emoji: '🛠', type: 'Découverte', title: 'Outil', script: `Cet outil reflète la réalité terrain — ou c'est de la data saisie par vos équipes ?`, tips: ["Chercher la limite de l'outil"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'difficultes', emoji: '🔥', type: 'Qualification', title: 'Difficultés', checklist: ["Vous arrivez à piloter rentablement vos projets avec votre organisation actuelle ?", "Si vous preniez 20-30% de projets supplémentaires, votre équipe pourrait suivre sans recrutement ?", "Vous avez une visibilité globale et fiable sur tous vos chantiers en temps réel ?", "Vous valorisez suffisamment vos projets auprès de vos clients et en interne ?"], script: `Je pose ces questions pour voir si ce qu'on fait est vraiment adapté à votre situation.`, tips: ["Quatre angles : rentabilité, scalabilité, visibilité, valorisation"], branches: [{ label: "Scalabilité / rentabilité", to: 'probleme-confirme' }, { label: "Visibilité insuffisante", to: 'probleme-confirme' }, { label: "Valorisation manquante", to: 'probleme-confirme' }, { label: "Tout va bien", to: 'fin' }] },
+      { id: 'probleme-confirme', emoji: '✅', type: 'Validation', title: 'Problème confirmé', script: `Donc la croissance est freinée soit par le manque de visibilité, soit par la capacité de votre équipe à absorber plus de volume — et peut-être les deux. C'est bien ça ?`, tips: ["Attendre la confirmation"], branches: [{ label: "→ Urgence / timing", to: 'urgence' }] },
+      { id: 'urgence', emoji: '⏰', type: 'Timing', title: 'Urgence', script: `Il y a un moment dans les prochains mois où ce sujet devient prioritaire — un objectif de croissance, une revue de direction, une saison chargée ?`, tips: ["Identifier s'il y a une échéance naturelle", "Si oui → le RDV a encore plus de valeur"], branches: [{ label: "Oui — échéance précise", to: 'decision' }, { label: "Pas d'urgence particulière", to: 'solution' }] },
+      { id: 'decision', emoji: '🔑', type: 'Décision', title: 'Décision', checklist: ["Pour ce type d'outil, c'est vous qui décidez ou il y a une validation direction ?", "Vous avez un budget outillage / productivité dans votre périmètre ?"], script: `Je pose ces questions pour adapter la suite — pas la peine de monter un dossier si vous décidez seul.`, tips: ["Si décideur direct → closing immédiat", "Si validation requise → proposer une démo multi-décideurs"], branches: [{ label: "Décideur direct", to: 'solution' }, { label: "Validation requise", to: 'multi-decideurs' }] },
+      { id: 'multi-decideurs', emoji: '👥', type: 'Multi-décideurs', title: 'Multi-décideurs', script: `Tout à fait normal. On pourrait prévoir une démo courte avec les bonnes personnes en même temps — ça évite les allers-retours et vous arrivez avec des éléments concrets.`, tips: ["Proposer une démo collective", "Demander qui doit être présent"], branches: [{ label: "→ Solution", to: 'solution' }] },
+      { id: 'solution', emoji: '💡', type: 'Solution', title: 'Solution', script: `Ce qu'on installe : vos équipes ont une vision temps réel de chaque chantier. Vous avez un dashboard global de tous vos projets. Moins de coordination = votre équipe gère plus de projets. Et des contenus pour valoriser vos réalisations. Résultat : <em>piloter et valoriser plus de projets sans recrutement.</em>`, tips: ["Double angle : pilotage + valorisation"], branches: [{ label: "→ Closing", to: 'closing' }] },
+      { id: 'closing', emoji: '📅', type: 'Closing', title: 'Closing', script: `Ce que vous m'avez décrit correspond vraiment à ce qu'on aide à résoudre. <em>20 minutes</em> pour regarder comment des équipes similaires ont gagné en volume et en visibilité — vous jugerez. <em>Jeudi ou vendredi ?</em>`, tips: ["Deux options précises", "Envoyer l'invite en direct"], branches: [{ label: "✅ RDV confirmé", to: 'fin-rdv' }, { label: "Envoyez un mail", to: 'objection-mail' }, { label: "Pas convaincu", to: 'fin' }] },
+      { id: 'objection-mail', emoji: '📧', type: 'Objection', title: 'Mail', script: `Bien sûr. Vous voulez voir quoi — nos références, un cas client sur une équipe comparable, ou comment ça s'intègre à votre organisation ?`, tips: ["Demander toujours CE qu'il veut voir"], branches: [{ label: "→ Fixer un créneau", to: 'fixer-creneau' }] },
+      { id: 'fixer-creneau', emoji: '🗓', type: 'Action', title: 'Créneau', script: `Jeudi 10h ou vendredi 14h — lequel vous convient ?`, tips: ["Deux options précises"], branches: [{ label: "✅ Créneau fixé", to: 'fin-rdv' }] },
+      { id: 'fin-rdv', emoji: '🏆', type: 'Fin — Succès', title: 'RDV confirmé', script: `Parfait. Invite envoyée maintenant — restez en ligne, je vérifie qu'elle n'est pas dans vos spams.`, tips: ["CRM → RDV Book"], branches: [] },
+      { id: 'fin', emoji: '🔚', type: 'Fin', title: 'Fin d\'appel', script: `Je comprends tout à fait. Bonne continuation.`, tips: [], branches: [] },
+    ],
+    objections: [
+      { trigger: "On gère bien avec notre équipe actuelle", response: "Si vous deviez absorber 30% de projets supplémentaires demain — avec votre organisation actuelle, qu'est-ce qui lâcherait en premier ?", tip: "Question de projection" },
+      { trigger: "Pas de budget", response: "Vous n'avez pas de budget outillage / productivité dans votre périmètre — ou c'est que le problème n'est pas assez douloureux pour justifier un investissement ?", tip: "Distinguer absence de budget vs absence de problème" },
+    ]
+  },
+
+  {
+    id: 'moe-amo',
+    emoji: '📐',
+    label: 'MOE / AMO',
+    tag: 'BTP',
+    tagClass: 'tag-btp',
+    steps: [
+      { id: 'accroche', emoji: '📞', type: 'Départ', title: 'Accroche', script: `Oui, bonjour <em>M./Mme [Nom]</em> ? Je suis Maxime Dubos de C.lechantier — alors voilà c'est un appel de prospection, j'espère que vous allez pas balancer votre téléphone par la fenêtre et me laisser une petite minute ?`, tips: ["Même accroche universelle"], branches: [{ label: "✅ Oui", to: 'pitch' }, { label: "⏱ Pas le temps", to: 'pas-le-temps' }] },
+      { id: 'pas-le-temps', emoji: '⏱', type: 'Objection rapide', title: 'Pas le temps', script: `Je comprends. On aide les MOE et AMO à piloter leurs chantiers à distance, optimiser leurs déplacements, et fournir une solution de suivi visuel à leurs clients finaux. Ça vaut le coup que je vous rappelle ?`, tips: ["Triple bénéfice : pilotage, déplacements, client"], branches: [{ label: "Oui, rappelez-moi", to: 'fixer-creneau' }, { label: "Non", to: 'fin' }] },
+      { id: 'pitch', emoji: '🎯', type: 'Pitch & Découverte', title: 'Pitch', script: `On travaille avec des MOE et AMO — on les aide à valoriser leurs chantiers, piloter à distance, optimiser leurs déplacements, et fournir un dispositif de suivi visuel à leurs clients finaux. Comment vous assurez le suivi et le contrôle qualité de vos chantiers aujourd'hui ?`, tips: ["Angle 'service au client final' = différenciateur fort", "UNE question"], branches: [{ label: "Visites terrain régulières", to: 'visites' }, { label: "Remontées des entreprises", to: 'remontees' }, { label: "Réunions de chantier", to: 'reunions' }, { label: "Outil de suivi", to: 'outil' }] },
+      { id: 'visites', emoji: '🚗', type: 'Découverte', title: 'Visites terrain', script: `Ces visites vous permettent d'avoir une vision complète — ou vous repartez parfois avec des zones d'ombre sur l'avancement réel ?`, tips: ["Chercher les doutes post-visite"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'remontees', emoji: '📡', type: 'Découverte', title: 'Remontées', script: `Ces remontées vous semblent fiables et non filtrées — ou vous avez parfois des doutes sur ce qu'on vous transmet ?`, tips: ["Chercher la méfiance envers les entreprises"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'reunions', emoji: '📅', type: 'Découverte', title: 'Réunions', script: `Entre deux réunions de chantier, si un problème survient — comment vous le captez rapidement ?`, tips: ["Chercher le délai de détection"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'outil', emoji: '🛠', type: 'Découverte', title: 'Outil', script: `Cet outil vous donne une vision automatique — ou c'est de la data saisie par les entreprises sur le chantier ?`, tips: ["Chercher la limite : données saisies vs captées"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'difficultes', emoji: '🔥', type: 'Qualification', title: 'Difficultés', checklist: ["Vous avez des doutes parfois sur les remontées terrain — est-ce que ce qu'on vous dit reflète vraiment la réalité ?", "Vous faites trop de déplacements pour des visites qui pourraient être évitées ?", "Vous avez déjà eu des litiges ou malfaçons découverts trop tard, sans preuve visuelle solide ?", "Vos clients finaux vous demandent une traçabilité ou un suivi visuel du chantier ?"], script: `Je pose ces questions pour voir si ce qu'on fait colle vraiment à votre activité.`, tips: ["Argument litiges/preuves = très fort pour MOE/AMO", "Argument client final = différenciateur de service"], branches: [{ label: "Remontées peu fiables", to: 'probleme-confirme' }, { label: "Trop de déplacements", to: 'probleme-confirme' }, { label: "Litiges / preuves manquantes", to: 'probleme-confirme' }, { label: "Client demande suivi visuel", to: 'probleme-confirme' }] },
+      { id: 'probleme-confirme', emoji: '✅', type: 'Validation', title: 'Problème confirmé', script: `Donc vous avez besoin d'une source d'information terrain fiable, non filtrée, qui vous permette de piloter à distance et d'avoir des preuves documentées — c'est bien le cœur du sujet ?`, tips: ["Attendre la confirmation"], branches: [{ label: "→ Conséquences", to: 'consequences' }] },
+      { id: 'consequences', emoji: '📊', type: 'Impact', title: 'Conséquences', script: `Et concrètement — ce manque de vision fiable, ça se traduit comment ? Déplacements inutiles, problèmes découverts tard, ou tensions avec des clients ?`, tips: ["Laisser chiffrer l'impact"], branches: [{ label: "Déplacements coûteux", to: 'solution' }, { label: "Problèmes / litiges tardifs", to: 'solution' }, { label: "Manque de preuves pour client", to: 'solution' }] },
+      { id: 'solution', emoji: '💡', type: 'Solution', title: 'Solution', script: `Ce qu'on installe : pilotage et conduite à distance — vous voyez sans vous déplacer. Retours terrain sans filtre : la caméra, pas l'interprétation. Historique horodaté complet pour la gestion des litiges. Preuves visuelles pour vos clients finaux. Et une solution de suivi à proposer à vos clients comme service à valeur ajoutée. Résultat : <em>valoriser le chantier, piloter à distance, et fournir un dispositif de suivi au client.</em>`, tips: ["Angle 'service au client' = nouveau revenu pour le MOE/AMO", "Historique litiges = protection juridique"], branches: [{ label: "→ Closing", to: 'closing' }] },
+      { id: 'closing', emoji: '📅', type: 'Closing', title: 'Closing', script: `Ce que vous m'avez décrit correspond vraiment à ce qu'on aide à résoudre — notamment la dimension preuve et traçabilité pour vos clients finaux. <em>20 minutes</em> pour vous montrer comment ça fonctionne sur un chantier similaire — vous jugerez. <em>Jeudi ou vendredi ?</em>`, tips: ["Angle preuve/traçabilité = différenciateur pour MOE/AMO"], branches: [{ label: "✅ RDV confirmé", to: 'fin-rdv' }, { label: "Envoyez un mail", to: 'objection-mail' }, { label: "Pas convaincu", to: 'fin' }] },
+      { id: 'objection-mail', emoji: '📧', type: 'Objection', title: 'Mail', script: `Bien sûr. Vous voulez voir quoi — des exemples de suivi sur des chantiers similaires, nos références, ou comment ça peut se présenter à vos clients finaux ?`, tips: ["Angle client final = différent des autres personas"], branches: [{ label: "→ Fixer un créneau", to: 'fixer-creneau' }] },
+      { id: 'fixer-creneau', emoji: '🗓', type: 'Action', title: 'Créneau', script: `Jeudi 10h ou vendredi 14h — lequel vous convient ?`, tips: ["Deux options précises"], branches: [{ label: "✅ Créneau fixé", to: 'fin-rdv' }] },
+      { id: 'fin-rdv', emoji: '🏆', type: 'Fin — Succès', title: 'RDV confirmé', script: `Parfait. Invite envoyée maintenant — restez en ligne, je vérifie qu'elle n'est pas dans vos spams.`, tips: ["CRM → RDV Book"], branches: [] },
+      { id: 'fin', emoji: '🔚', type: 'Fin', title: 'Fin d\'appel', script: `Je comprends tout à fait. Bonne continuation.`, tips: [], branches: [] },
+    ],
+    objections: [
+      { trigger: "Mes clients ne demandent pas ça", response: "Vos clients ne vous demandent pas de traçabilité visuelle — ou ils n'en parlent pas parce que personne ne leur a proposé ?", tip: "Renverser la question" },
+      { trigger: "On a déjà un prestataire photo", response: "Il est présent régulièrement tout au long du projet — ou seulement sur les phases clés ?", tip: "Chercher la couverture continue" },
+      { trigger: "Pas de budget", response: "Un litige non documenté, ça vous a déjà coûté combien ?", tip: "Ramener au coût d'un litige" },
+    ]
+  },
+
+  {
+    id: 'service-com',
+    emoji: '📸',
+    label: 'Service Com BTP',
+    tag: 'BTP',
+    tagClass: 'tag-btp',
+    steps: [
+      { id: 'accroche', emoji: '📞', type: 'Départ', title: 'Accroche', script: `Oui, bonjour <em>M./Mme [Nom]</em> ? Je suis Maxime Dubos de C.lechantier — alors voilà c'est un appel de prospection, j'espère que vous allez pas balancer votre téléphone par la fenêtre et me laisser une petite minute ?`, tips: ["Même accroche universelle"], branches: [{ label: "✅ Oui", to: 'pitch' }, { label: "⏱ Pas le temps", to: 'pas-le-temps' }] },
+      { id: 'pas-le-temps', emoji: '⏱', type: 'Objection rapide', title: 'Pas le temps', script: `Je comprends. On aide les équipes com des grands groupes BTP à produire des contenus de qualité pour valoriser leurs chantiers — appels d'offres, réseaux, études de cas. Ça vaut le coup que je vous rappelle ?`, tips: ["Mentionner 'grands groupes BTP' — ancrage sur leur univers"], branches: [{ label: "Oui, rappelez-moi", to: 'fixer-creneau' }, { label: "Non", to: 'fin' }] },
+      { id: 'pitch', emoji: '🎯', type: 'Pitch & Découverte', title: 'Pitch', script: `On travaille avec les équipes com de groupes comme <em>Vinci, Eiffage, Colas</em> — on les aide à produire des contenus de qualité pour valoriser leurs chantiers, nourrir leurs appels d'offres et alimenter leur communication sans dépendre des équipes terrain. Comment vous documentez et valorisez vos projets aujourd'hui ?`, tips: ["Références grands groupes = crédibilité immédiate", "UNE question de découverte"], branches: [{ label: "Photos / vidéos ponctuelles", to: 'photos' }, { label: "Prestataire externe", to: 'prestataire' }, { label: "Peu de documentation", to: 'peu-doc' }] },
+      { id: 'photos', emoji: '📸', type: 'Découverte', title: 'Photos ponctuelles', script: `Ces contenus sont réguliers et de qualité suffisante pour vos besoins — ou c'est souvent insuffisant, trop brut, ou produit trop tard dans le projet ?`, tips: ["Chercher la frustration qualité/régularité"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'prestataire', emoji: '🎥', type: 'Découverte', title: 'Prestataire externe', script: `Ce prestataire est présent régulièrement sur les chantiers — ou seulement pour les moments clés comme la livraison ?`, tips: ["Chercher le manque de couverture continue"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'peu-doc', emoji: '📭', type: 'Découverte', title: 'Peu de documentation', script: `Et ça vous manque ? Vous voyez des projets dont vous êtes fiers mais qui ne sont pas suffisamment mis en valeur — pour des appels d'offres, des réseaux sociaux, ou des études de cas clients ?`, tips: ["Faire exprimer le manque à gagner"], branches: [{ label: "→ Difficultés", to: 'difficultes' }] },
+      { id: 'difficultes', emoji: '🔥', type: 'Qualification', title: 'Difficultés', checklist: ["Vous avez du mal à avoir des contenus réguliers et de qualité sur vos chantiers ?", "Vous avez des projets dont vous êtes fiers mais qui ne sont pas suffisamment valorisés ?", "Vous avez besoin de preuves visuelles pour des appels d'offres ou vos clients ?", "Le contenu terrain disponible est souvent insuffisant ou trop brut pour communiquer ?"], script: `Je pose ces questions pour voir si ce qu'on fait peut vraiment vous aider — la dernière chose que je veux c'est vous proposer quelque chose qui ne colle pas à vos besoins.`, tips: ["Rôle d'éditeur de contenu = angle com", "Identifier le canal principal : AO, LinkedIn, client final"], branches: [{ label: "Manque de contenus réguliers", to: 'solution' }, { label: "Besoin de preuves / études de cas", to: 'solution' }, { label: "Aucun problème", to: 'fin' }] },
+      { id: 'solution', emoji: '💡', type: 'Solution', title: 'Solution', script: `Ce qu'on installe : un dispositif de documentation automatisée sur vos chantiers. Captations régulières tout au long du projet. Timelapse de l'avancement pour valoriser le travail réalisé. Contenus utilisables pour vos réseaux, appels d'offres, études de cas. Et une preuve de qualité pour vos clients finaux. Résultat : <em>des contenus de qualité, sans dépendre des équipes terrain, sur toute la durée du projet.</em>`, tips: ["Angle contenu = différent du suivi opérationnel", "Insister sur 'sans dépendre des équipes terrain'"], branches: [{ label: "→ Closing", to: 'closing' }] },
+      { id: 'closing', emoji: '📅', type: 'Closing', title: 'Closing', script: `Je vous propose <em>20 minutes</em> pour vous montrer des exemples de ce qu'on a produit sur des projets similaires — vous jugerez si c'est le niveau de qualité qu'il vous faut. <em>Jeudi ou vendredi ?</em>`, tips: ["Angle 'vous jugerez la qualité' — adapté au profil com"], branches: [{ label: "✅ RDV confirmé", to: 'fin-rdv' }, { label: "Envoyez un mail", to: 'objection-mail' }, { label: "Pas convaincu", to: 'fin' }] },
+      { id: 'objection-mail', emoji: '📧', type: 'Objection', title: 'Mail', script: `Bien sûr. Vous voulez voir quoi — des exemples de contenus qu'on a produits, nos références BTP, ou un cas client sur un groupe similaire ?`, tips: ["Proposer des exemples visuels — c'est un profil com"], branches: [{ label: "→ Fixer un créneau", to: 'fixer-creneau' }] },
+      { id: 'fixer-creneau', emoji: '🗓', type: 'Action', title: 'Créneau', script: `Jeudi 10h ou vendredi 14h — lequel vous convient ?`, tips: ["Deux options précises"], branches: [{ label: "✅ Créneau fixé", to: 'fin-rdv' }] },
+      { id: 'fin-rdv', emoji: '🏆', type: 'Fin — Succès', title: 'RDV confirmé', script: `Parfait. Invite envoyée maintenant — restez en ligne, je vérifie qu'elle n'est pas dans vos spams.`, tips: ["CRM → RDV Book"], branches: [] },
+      { id: 'fin', emoji: '🔚', type: 'Fin', title: 'Fin d\'appel', script: `Je comprends tout à fait. Bonne continuation.`, tips: ["Rester cordial"], branches: [] },
+    ],
+    objections: [
+      { trigger: "On gère ça en interne", response: "Ces contenus internes, ils sont assez réguliers et qualitatifs pour des appels d'offres ou des études de cas — ou c'est plutôt du ponctuel ?", tip: "Chercher le manque de régularité" },
+      { trigger: "On a un prestataire vidéo", response: "Ce prestataire est présent en continu sur les chantiers ou seulement pour des tournages spécifiques ?", tip: "Différencier couverture ponctuelle vs continue" },
+    ]
+  },
+];
+
+// =====================================================================
+// DATA — R1 (Rendez-vous Découverte)
+// =====================================================================
+const R1_PERSONAS = [
+  {
+    id: 'btp-general',
+    emoji: '🏗',
+    label: 'BTP — Dir. Travaux / CD',
+    tag: 'BTP',
+    tagClass: 'tag-btp',
+    steps: [
+      { id: 'ouverture', emoji: '🤝', type: 'Ouverture', title: 'Ouverture R1', script: `Merci pour ce temps — je vais être direct sur l'objectif de cet échange : mon but c'est pas de vous vendre quoi que ce soit aujourd'hui. C'est de comprendre votre organisation, voir si ce qu'on fait peut vraiment vous apporter de la valeur. Et si c'est pas le cas, on s'en rend compte ensemble. Ça vous va ? Donc — pourquoi vous avez accepté ce rendez-vous aujourd'hui ?`, tips: ["Désarmer immédiatement — 'je ne suis pas là pour vendre'", "La question 'pourquoi vous avez accepté' révèle le vrai pain", "Écouter sans interrompre la première réponse"], branches: [{ label: "→ Situation (S)", to: 'situation' }] },
+      {
+        id: 'situation', emoji: '🗺', type: 'SPICED — Situation', title: 'Situation (S)',
+        script: `Pour bien comprendre votre contexte avant d'aller plus loin :\n\nVous conduisez combien de chantiers simultanément en ce moment ?\nQuelle est la durée moyenne de vos chantiers ?\nIls sont à quelle distance de vos bureaux ?\nVous vous déplacez sur chacun d'entre eux ?\nVos équipes sont internes ou des prestataires externes ?\nEst-ce que vous travaillez avec des MOA ou des promoteurs ? Ils vous demandent souvent des comptes ?`,
+        tips: ["6 questions max — aller chercher les chiffres", "Ne pas tout poser d'une traite — laisser répondre entre chaque", "Reformuler : 'Ok donc vous avez X chantiers à Ykm en moyenne — c'est ça ?'", "Objectif : cartographier son organisation avant de creuser les douleurs"],
+        branches: [{ label: "→ Problématique (P)", to: 'pilotage' }]
+      },
+      {
+        id: 'pilotage', emoji: '🎮', type: 'Situation — Pivot', title: 'Pilotage actuel',
+        script: `Ok j'ai bien compris votre contexte. Donc vous — comment vous pilotez vos chantiers aujourd'hui ?\n\nSur ces X chantiers, comment sont répartis vos conducteurs travaux ?\nComment se passent les échanges avec ces conducs ?\nComment vous faites pour valoriser vos chantiers aujourd'hui ?`,
+        tips: ["Transition naturelle : 'j'ai bien compris votre contexte'", "Écouter la méthode de pilotage sans juger", "Prendre des notes — ces infos reviendront dans le R2"],
+        branches: [{ label: "Échanges WhatsApp / remontées manuelles", to: 'pain-communication' }, { label: "Déplacements réguliers", to: 'pain-deplacements' }, { label: "Réunions de chantier", to: 'pain-retards' }]
+      },
+      {
+        id: 'pain-communication', emoji: '📡', type: 'SPICED — Pain', title: 'Pain — Communication',
+        script: `Ces échanges via cette méthode — qu'est-ce que vous en pensez vous ?\n\nComment vous vous assurez que les retours qui sont faits collent à la réalité du terrain ?\nEst-ce que ça vous arrive de faire des passages "surprise" sur un chantier pour voir si tout va bien ?\nPourquoi vous faites ça ?`,
+        tips: ["Creuser niv 1 (surface), niv 2 (problème), niv 3 (impact)", "Si pain détecté → creuser sans hésiter", "La 'surprise' révèle un manque de confiance dans les remontées"],
+        branches: [{ label: "→ Impact (I)", to: 'impact' }]
+      },
+      {
+        id: 'pain-deplacements', emoji: '🚗', type: 'SPICED — Pain', title: 'Pain — Déplacements',
+        script: `Ok si on revient sur les déplacements — est-ce qu'il y a certains chantiers sur lesquels vous allez moins souvent ? Pourquoi ?\n\nQuand il y a un retard ou un problème sur un chantier, comment vous l'apprenez — c'est le client ou le terrain qui vous contacte en premier ?\nCa prend combien de temps pour que vous appreniez un problème ?`,
+        tips: ["Chercher le 'délai de détection' d'un problème", "Un chantier visité moins souvent = chantier aveugle", "La réponse 'le client qui m'appelle' = situation d'urgence"],
+        branches: [{ label: "→ Impact (I)", to: 'impact' }]
+      },
+      {
+        id: 'pain-retards', emoji: '⚠️', type: 'SPICED — Pain', title: 'Pain — Retards & Litiges',
+        script: `Quand il y a un retard ou un problème sur un chantier, comment vous l'apprenez ?\nCa prend combien de temps ?\nComment vous auriez pu l'anticiper ?\n\nLa dernière fois qu'un client ou un presta vous a contesté une livraison ou un avancement — comment ça s'est passé ? Quelles preuves vous aviez ?`,
+        tips: ["La question des preuves est décisive — souvent ils n'en ont pas", "Creuser le coût d'un litige : heures de gestion + impact financier", "'Quelles preuves vous aviez ?' → souvent réponse = aucune"],
+        branches: [{ label: "→ Impact (I)", to: 'impact' }]
+      },
+      {
+        id: 'impact', emoji: '📊', type: 'SPICED — Impact', title: 'Impact (I) — Chiffrer',
+        script: `Aujourd'hui, combien de temps ça vous prend par jour de gérer les retours des équipes sur le terrain ?\n\nEt les déplacements — ça vous prend combien de temps par semaine, par mois ?\n\n[Reformuler] : On a vu que vous avez X chantiers à Y heure de route aller-retour, ça vous fait Z heures par semaine — on est d'accord ?`,
+        tips: ["Toujours reformuler et chiffrer — 'donc on est d'accord que ça représente X ?' ", "Si litiges : combien ça a coûté ? en heures de gestion ? en perte financière ?", "L'objectif : que lui-même prononce le chiffre de sa douleur"],
+        branches: [{ label: "→ ROI calculé", to: 'roi-irve' }, { label: "→ Communication (CE)", to: 'critical-event' }]
+      },
+      {
+        id: 'roi-irve', emoji: '💰', type: 'Valorisation ROI', title: 'Mise en perspective ROI',
+        script: `Si vous récupérez ces 10h de route par semaine, 5h de gestion et environ 5000€ de litige par mois — ça représenterait quoi chez vous ces économies ? Vous en feriez quoi ?\n\nOu bien : Mon client IRVE Electra a pu gérer 50% de projets supplémentaires en simultané en limitant de 30% ses déplacements avec -50% de temps de gestion avec le terrain. Ça représenterait quoi chez vous ?`,
+        tips: ["Laisser le prospect énoncer lui-même la valeur — ne pas le faire à sa place", "Si il ne sait pas chiffrer → l'aider : 'votre heure de travail, vous la valorisez à combien ?'", "La référence Electra = preuve sociale + benchmark concret"],
+        branches: [{ label: "→ Communication & Valorisation (CE)", to: 'critical-event' }]
+      },
+      {
+        id: 'critical-event', emoji: '📅', type: 'SPICED — Critical Event', title: 'Événement critique (CE)',
+        script: `Dans les 30 à 60 prochains jours, est-ce que vous avez des projets qui arrivent ? Voir même dans 90 jours ?\n\nEst-ce que l'un de ces projets mériterait d'être plus valorisé que les autres ? Pourquoi ?\n\nEst-ce que vous avez un client qui vous a déjà demandé plus de visibilité sur un projet ?\n\nEst-ce que vous avez une réunion importante dans les prochains jours sur laquelle vous auriez besoin de preuves ?`,
+        tips: ["L'événement critique = le 'hook' pour créer l'urgence sans manipulation", "Un chantier qui démarre = fenêtre d'opportunité concrète", "Une réunion MOA imminente = besoin de preuves = besoin de notre outil"],
+        branches: [{ label: "→ Décision (D)", to: 'decision' }]
+      },
+      {
+        id: 'decision', emoji: '🔑', type: 'SPICED — Decision', title: 'Décision (D)',
+        script: `La dernière fois que vous avez dû prendre une décision comme celle-ci, avec qui ça s'est décidé ? Est-ce qu'il faut mettre quelqu'un d'autre dans la boucle ?\n\nOn parle d'une utilité de la plateforme pour vous aujourd'hui, mais est-ce que ça serait utile pour quelqu'un d'autre dans vos équipes ? Qui d'autre aurait intérêt à utiliser cette plateforme ?\n\nSur ce type de projets, ça serait quel type de budget ? Com, budget projet, ou achat ?`,
+        tips: ["Identifier tous les décideurs AVANT le R2 — ne pas avoir de surprise", "Budget : com / projet / achat = influence sur qui doit être présent au R2", "Si un décideur manque → le faire inviter au R2"],
+        branches: [{ label: "→ Cloture R1", to: 'cloture-r1' }]
+      },
+      {
+        id: 'cloture-r1', emoji: '🎯', type: 'Cloture R1', title: 'Cloture & Suite',
+        script: `Merci pour toutes ces réponses. Aujourd'hui j'ai bien compris vos problématiques et votre contexte. Je sais que notre solution peut répondre à ces différents points.\n\nDonc écoutez — ce que je vous propose : je reviens vers vous avec une présentation et un devis adaptés à votre situation, sur le chantier [nom du chantier identifié]. On se retrouve X minutes avec [décideur identifié] pour regarder ça ensemble. Est-ce que ça vous convient ?`,
+        tips: ["Résumer LES douleurs chiffrées — ne pas tout lister, juste les 2-3 principales", "Nommer le chantier = rendre le R2 concret et personnalisé", "Confirmer qui doit être présent au R2", "Envoyer un mail récap avec : coût de la problématique / date du prochain échange / cas client"],
+        branches: [{ label: "✅ R2 confirmé", to: 'fin-succes' }, { label: "Je vais réfléchir", to: 'objection-reflexion' }]
+      },
+      {
+        id: 'objection-reflexion', emoji: '🤔', type: 'Objection', title: '"Je vais réfléchir"',
+        script: `D'accord, mais qu'est-ce qui vous fait douter ?\n\nLe prix ? La solution ? Pourtant vous m'avez dit que ça correspondrait parfaitement à [tel chantier qui va commencer].\n\nParler du prix et mettre en opposition les pertes et le coût de la solution. Donc il s'agit d'un investissement et plus d'une dépense — on est d'accord ?\n\nCa serait quoi pour vous le bon prix ?`,
+        tips: ["Ne jamais accepter 'je vais réfléchir' sans creuser", "Rappeler le chantier et l'urgence identifiés", "Mettre en opposition : coût du problème vs coût de la solution"],
+        branches: [{ label: "→ Fixer le R2", to: 'fin-succes' }]
+      },
+      { id: 'fin-succes', emoji: '🏆', type: 'Fin — Succès', title: 'R2 planifié', script: `Parfait. Je vous envoie un mail récap ce soir avec un résumé de ce qu'on a vu, le coût de la problématique telle qu'on l'a calculée, et un cas client pour que vous arriviez avec du contexte. À [date du R2].`, tips: ["Mail récap dans les 2h — reformuler la douleur + impact + date R2", "Envoyer un cas client adapté au persona", "Préparer le devis personnalisé avant le R2"], branches: [] },
+    ],
+    objections: [
+      { trigger: "On veut garder le côté humain", response: "Je suis d'accord avec vous, il faut garder le côté humain. L'idée ici c'est de vous faciliter la vie en pilotage — vous économiser X temps, X déplacements. Et vous vous déplacez uniquement quand c'est vraiment nécessaire, pour le côté humain précisément.", tip: "Valider leur valeur, puis repositionner l'outil comme facilitateur du lien humain" },
+      { trigger: "Timing — revenez dans 3 mois", response: "Je comprends. Mais dans 3 mois qu'est-ce qui aura changé ? Ce que je vous propose c'est qu'on puisse verrouiller ça ensemble rapidement. Le but c'est pas qu'on vous l'installe maintenant, mais qu'on soit prêt à l'installer. En attendant je vous envoie un cas client.", tip: "Distinguer 'décision' et 'installation' — on peut décider maintenant, installer plus tard" },
+      { trigger: "Le prix", response: "Mettre en opposition les pertes et le coût de la solution. Un litige ou un déplacement inutile — ça vous coûte combien ? Donc il s'agit d'un investissement et plus d'une dépense — on est d'accord ? Ça serait quoi pour vous le bon prix ?", tip: "Recalibrer la perception : investissement vs dépense" },
+    ]
+  },
+  {
+    id: 'irve-r1',
+    emoji: '⚡',
+    label: 'IRVE — PM / Resp. équipes',
+    tag: 'IRVE',
+    tagClass: 'tag-irve',
+    steps: [
+      { id: 'ouverture', emoji: '🤝', type: 'Ouverture', title: 'Ouverture R1', script: `Merci pour ce temps — je vais être direct : l'objectif aujourd'hui c'est de comprendre votre organisation pour voir si ce qu'on fait peut vraiment vous apporter de la valeur. Pas de présentation en mode catalogue. On va juste parler de votre situation. Ça vous va ? Donc, qu'est-ce qui vous a motivé à accepter ce rendez-vous ?`, tips: ["Désarmer — 'pas de présentation catalogue'", "La motivation = révèle le pain principal"], branches: [{ label: "→ Situation (S)", to: 'situation' }] },
+      {
+        id: 'situation', emoji: '🗺', type: 'SPICED — Situation', title: 'Situation (S)',
+        script: `Pour cartographier votre organisation :\n\nVous gérez combien de projets en simultané en ce moment ?\nSur quelle zone géographique ?\nVos installations — vous les suivez via quel canal avec les installateurs ?\nVos équipes internes ou des prestataires ?\nVous avez des clients qui vous demandent des comptes régulièrement sur l'avancement ?`,
+        tips: ["Toujours quantifier : nombre, zone, fréquence", "La question 'clients qui demandent des comptes' = pression externe = urgence", "Prendre des notes fidèlement pour le R2"],
+        branches: [{ label: "→ Problématique (P)", to: 'pilotage' }]
+      },
+      {
+        id: 'pilotage', emoji: '🎮', type: 'Situation — Pivot', title: 'Pilotage actuel',
+        script: `Comment vous pilotez vos projets aujourd'hui concrètement ? Comment se passent les échanges avec vos installateurs ?\n\nComment vous faites pour vous assurer que l'avancement qui vous est reporté correspond à la réalité du terrain ?`,
+        tips: ["'Réalité du terrain' = la question qui fait réfléchir", "Écouter sans juger la méthode actuelle"],
+        branches: [{ label: "WhatsApp / photos", to: 'pain-whatsapp' }, { label: "Reporting / outil", to: 'pain-outil' }, { label: "Déplacements", to: 'pain-deplacement' }]
+      },
+      { id: 'pain-whatsapp', emoji: '📱', type: 'SPICED — Pain', title: 'Pain — WhatsApp', script: `Ces échanges WhatsApp / photos — qu'est-ce que vous en pensez vous ?\n\nQuand quelqu'un ne répond pas ou envoie une photo au mauvais moment, vous gérez comment ?\nCa vous arrive souvent de ne pas avoir de nouvelles d'un chantier pendant X jours ?`, tips: ["Chercher le délai sans nouvelles", "La dépendance installateur = asymétrie d'information"], branches: [{ label: "→ Impact (I)", to: 'impact' }] },
+      { id: 'pain-outil', emoji: '🛠', type: 'SPICED — Pain', title: 'Pain — Outil reporting', script: `Cet outil — il vous donne une vision automatique du terrain, ou c'est du reporting saisi manuellement par les installateurs ?\n\nEt si un installateur ne saisit pas, ou saisit mal — vous le découvrez quand ?`, tips: ["La fiabilité du reporting saisi = point faible à creuser", "Chercher l'exemple récent d'un reporting inexact"], branches: [{ label: "→ Impact (I)", to: 'impact' }] },
+      { id: 'pain-deplacement', emoji: '🚗', type: 'SPICED — Pain', title: 'Pain — Déplacements', script: `Ces déplacements — c'est combien de chantiers par semaine et sur quelle distance ?\n\nEst-ce qu'il y a des chantiers sur lesquels vous allez moins souvent ? Pourquoi ?\n\nSi vous deviez absorber 30% de projets supplémentaires avec la même orga — qu'est-ce qui lâcherait en premier ?`, tips: ["La question des 30% = projection = révèle le plafond de verre", "Un chantier moins visité = un chantier aveugle"], branches: [{ label: "→ Impact (I)", to: 'impact' }] },
+      {
+        id: 'impact', emoji: '📊', type: 'SPICED — Impact', title: 'Impact (I) — Chiffrer',
+        script: `Combien de temps ça vous prend par jour de gérer les retours des équipes terrain ?\n\nLes déplacements — par semaine, par mois ?\n\n[Reformuler et chiffrer] : On a vu que vous avez X projets à Ykm de vos bureaux, ça fait Z heures de route par semaine — c'est bien ça ?\n\nEt si on rajoute la coordination : au total on est sur combien d'heures "non productives" par semaine ?`,
+        tips: ["Reformuler et valider chaque chiffre — ne pas présumer", "Objectif : il prononce lui-même le total de sa perte de temps", "Référence Electra : +50% projets, -30% déplacements, -50% temps gestion"],
+        branches: [{ label: "→ Événement critique (CE)", to: 'critical-event' }]
+      },
+      {
+        id: 'critical-event', emoji: '📅', type: 'SPICED — Critical Event', title: 'Événement critique (CE)',
+        script: `Dans les 30 à 60 prochains jours, vous avez des projets qui arrivent ?\n\nEst-ce qu'il y a un projet sur lequel vous auriez besoin de plus de visibilité que d'habitude ?\n\nEst-ce que vous avez un client qui vous demande plus de transparence sur l'avancement ?\n\nEst-ce qu'il y a une revue de projet ou une réunion importante dans les prochaines semaines ?`,
+        tips: ["Le chantier qui arrive = cas pratique pour le R2", "Un client exigeant = pression externe = urgence ressentie", "Une revue imminente = besoin de preuves = besoin de l'outil maintenant"],
+        branches: [{ label: "→ Décision (D)", to: 'decision' }]
+      },
+      {
+        id: 'decision', emoji: '🔑', type: 'SPICED — Decision', title: 'Décision (D)',
+        script: `La dernière fois que vous avez mis en place un nouvel outil, ça s'est décidé comment et avec qui ?\n\nEst-ce qu'il faut impliquer quelqu'un d'autre — un responsable hiérarchique, les achats ?\n\nEst-ce que d'autres personnes dans votre équipe auraient intérêt à utiliser cette solution ?\n\nSur ce type de prestation, ça rentre dans quel type de budget chez vous ?`,
+        tips: ["Identifier le processus de décision AVANT le R2", "Si décideur absent → proposer de l'inclure au R2", "Budget ligne : influence le pricing à présenter au R2"],
+        branches: [{ label: "→ Cloture R1", to: 'cloture-r1' }]
+      },
+      {
+        id: 'cloture-r1', emoji: '🎯', type: 'Cloture R1', title: 'Cloture & Suite',
+        script: `Merci pour toutes ces réponses. Aujourd'hui j'ai bien compris votre contexte et vos problématiques. Je sais que notre solution peut répondre à ces différents points.\n\nVoilà ce que je vous propose : je reviens avec une présentation et un devis adaptés à votre situation, sur le projet [nom identifié]. On se retrouve [durée] avec [décideur si identifié]. \n\nEst-ce que c'est bien ça que vous cherchez aujourd'hui ? Est-ce que cette solution pourrait être pertinente pour vous ?`,
+        tips: ["Répondre aux 3 questions : 'Est-ce bien ça ?' / 'Est-ce pertinent ?' / 'Si vous l'aviez eu sur [chantier] qu'est-ce que ça aurait changé ?'", "Récupérer les infos pour le devis R2 : type de chantier, durée, localisation, surface", "Mail récap dans les 2h"],
+        branches: [{ label: "✅ R2 confirmé", to: 'fin-succes' }, { label: "Je vais réfléchir", to: 'objection-reflexion' }]
+      },
+      { id: 'objection-reflexion', emoji: '🤔', type: 'Objection', title: '"Je vais réfléchir"', script: `D'accord, mais qu'est-ce qui vous fait douter ? Le prix ? La solution ? Pourtant vous m'avez dit que ça correspondrait sur [chantier identifié]. On peut parler du prix maintenant si vous voulez — pour voir si c'est réaliste par rapport à ce que ça vous coûte actuellement.`, tips: ["Ne jamais quitter sans creuser le doute", "Relier à un chantier concret", "Proposer une simulation de ROI rapide"], branches: [{ label: "→ R2 planifié", to: 'fin-succes' }] },
+      { id: 'fin-succes', emoji: '🏆', type: 'Fin — Succès', title: 'R2 planifié', script: `Parfait. Je vous envoie un mail récap ce soir avec un résumé de ce qu'on a vu, le coût de la problématique, et un cas client pour que vous arriviez avec du contexte. À [date du R2].`, tips: ["Mail récap dans les 2h", "Cas client IRVE — référence Electra si pertinente", "Préparer le devis personnalisé"], branches: [] },
+    ],
+    objections: [
+      { trigger: "Nos installateurs font déjà des remontées régulières", response: "Ces remontées sont automatiques ou c'est eux qui les initient ? Et si quelqu'un ne remonte pas, vous le découvrez quand ?", tip: "Remettre en question la fiabilité, pas la fréquence" },
+      { trigger: "On n'a pas de budget pour ça", response: "Vous ne rencontrez pas ce problème de visibilité ou de scalabilité ? Parce que si vous le rencontrez, le coût actuel est déjà là. Votre heure de travail, vous la valorisez à combien ?", tip: "Recalibrer : le coût du problème > coût de la solution" },
+      { trigger: "C'est trop compliqué à déployer", response: "En combien de temps vous pensez qu'on peut être opérationnel sur votre prochain chantier ? Parce que nous, on parle de quelques jours entre la commande et la première image.", tip: "Rassurer sur la rapidité et la simplicité de déploiement" },
+    ]
+  },
+];
+
+// =====================================================================
+// DATA — R2 (Présentation & Closing)
+// =====================================================================
+const R2_PERSONAS = [
+  {
+    id: 'r2-btp',
+    emoji: '🏗',
+    label: 'BTP — R2 Présentation',
+    tag: 'BTP',
+    tagClass: 'tag-r2t',
+    steps: [
+      {
+        id: 'ancrage-r2', emoji: '🔁', type: 'Ancrage', title: 'Ancrage — Rappel R1',
+        script: `Bonjour [Prénom], ravi de vous retrouver. Merci d'avoir pris ce temps avec [décideur si présent].\n\nAvant de rentrer dans la présentation, je voudrais qu'on se remette dans le contexte de notre dernier échange — juste pour m'assurer que rien n'a changé depuis.\n\nVous m'aviez parlé de [douleur 1], de [douleur 2], et du chantier [nom] qui arrive dans [délai]. C'est toujours d'actualité ?`,
+        tips: ["Ne JAMAIS attaquer la présentation sans ancrage — il faut que lui revive la douleur", "Si quelque chose a changé : adapter la présentation en temps réel", "Objectif : qu'il dit 'oui c'est toujours ça' — il se re-vend lui-même"],
+        branches: [{ label: "✅ Oui, toujours d'actualité", to: 'validation-contexte' }, { label: "Quelque chose a changé", to: 'reancrage' }]
+      },
+      {
+        id: 'reancrage', emoji: '🔄', type: 'Reancrage', title: 'Recadrage si changement',
+        script: `D'accord, dites-moi ce qui a changé — parce que si les priorités ont évolué, je veux adapter ce que je vous présente aujourd'hui.\n\nLe chantier [nom] n'est plus d'actualité ? Ou est-ce que c'est autre chose qui est prioritaire ?`,
+        tips: ["Adapter → ne pas présenter une solution hors-sujet", "Si vraiment plus de besoin → mieux vaut le savoir maintenant", "Un nouveau pain = nouvelle opportunité"],
+        branches: [{ label: "→ Validation contexte", to: 'validation-contexte' }]
+      },
+      {
+        id: 'validation-contexte', emoji: '✅', type: 'Validation', title: 'Validation contexte',
+        script: `Donc pour résumer ce qu'on avait identifié ensemble :\n\n→ Vous avez [X] chantiers simultanés, à [Y km] en moyenne\n→ Ca vous coûte [Z heures/semaine] en déplacements et coordination\n→ Vous avez eu des situations de [litige / retard / manque de visibilité]\n→ Vous avez un chantier [nom] qui démarre dans [délai]\n\nC'est bien ça ? Est-ce qu'il y a quelque chose que j'ai mal compris ?`,
+        tips: ["La reformulation chiffrée = puissante — il entend le coût de son problème", "S'il corrige → NOTER et adapter", "Ne pas passer à la présentation avant qu'il confirme"],
+        branches: [{ label: "→ Présentation solution", to: 'presentation-solution' }]
+      },
+      {
+        id: 'presentation-solution', emoji: '💡', type: 'Présentation', title: 'La solution — Cas pratique',
+        script: `Parfait. Donc laissez-moi vous montrer comment ça fonctionne concrètement — pas un pitch général, mais directement sur un cas similaire au vôtre.\n\n[Montrer la démo / cas client]\n\nCe que vous voyez là : c'est exactement ce que verrait votre conducteur travaux sur le chantier [nom] :\n→ Vision automatique sans dépendre des remontées\n→ Historique horodaté — preuve en cas de litige\n→ Alertes si un retard est détecté\n→ Accessible depuis le bureau, depuis le téléphone\n\nQu'est-ce que vous en pensez à chaud ?`,
+        tips: ["Démo orientée sur LEUR chantier — pas un produit générique", "Historique horodaté = argument fort sur les litiges BTP", "Poser la question 'à chaud' avant de présenter le prix", "Écouter les objections AVANT de présenter le devis"],
+        branches: [{ label: "Très intéressant", to: 'retour-positif' }, { label: "Des questions / doutes", to: 'retour-questions' }]
+      },
+      {
+        id: 'retour-positif', emoji: '🌟', type: 'Signal positif', title: 'Signal positif — Ancrage',
+        script: `Je suis content que ça vous parle. Je veux m'assurer qu'on est bien alignés avant d'aller plus loin.\n\nSi vous aviez mis en place cette solution sur [chantier cité au R1] — qu'est-ce que ça aurait changé concrètement pour vous ?\n\nEst-ce que c'est bien la solution que vous recherchez aujourd'hui ?`,
+        tips: ["La question 'qu'est-ce que ça aurait changé' = il se projette dans le bénéfice", "Attendre sa réponse avant de présenter le devis", "Plus il exprime le bénéfice, plus il se convainc lui-même"],
+        branches: [{ label: "→ Offres / Devis", to: 'presentation-offres' }]
+      },
+      {
+        id: 'retour-questions', emoji: '❓', type: 'Questions / Doutes', title: 'Traiter les doutes',
+        script: `Bien sûr, posez vos questions — c'est exactement pour ça qu'on est là.\n\n[Traiter chaque question avant d'avancer]\n\nMaintenant que c'est éclairci — est-ce que vous voyez comment cette solution répondrait à [douleur principale] ?`,
+        tips: ["Ne pas passer au devis tant qu'il reste des doutes non résolus", "Traiter une question à la fois — ne pas enchaîner", "Revenir à la douleur après chaque réponse"],
+        branches: [{ label: "→ Offres / Devis", to: 'presentation-offres' }]
+      },
+      {
+        id: 'presentation-offres', emoji: '📋', type: 'Présentation offres', title: 'Les offres — A / B / C',
+        script: `Voilà les 3 formules que je vous ai préparées pour le chantier [nom].\n\nJe vais vous les présenter dans l'ordre — je vous demanderai après laquelle correspond le mieux à ce que vous cherchez.\n\n[Présenter Offre A → B → C]\n\nCes 3 formules, laquelle est la plus proche de ce que vous cherchez ?`,
+        tips: ["Toujours présenter 3 offres — l'effet de contexte fait choisir la médiane", "Présenter de la moins chère à la plus complète", "Ne pas recommander avant d'avoir entendu leur réaction", "Silence après la question — laisser choisir"],
+        branches: [{ label: "→ Offre choisie", to: 'defense-prix' }, { label: "Objection prix", to: 'objection-prix' }]
+      },
+      {
+        id: 'defense-prix', emoji: '⚖️', type: 'Défense prix / ROI', title: 'Mise en perspective prix',
+        script: `Donc si on reprend ce qu'on a calculé ensemble :\n\n→ [Z heures/semaine] de déplacements et coordination = [montant €] par mois\n→ Un litige non documenté = [impact €]\n→ Notre solution sur ce chantier = [prix mensuel]\n\nDonc sur ce chantier — l'investissement est rentabilisé en [X semaines/mois]. Vous êtes d'accord avec ce calcul ?\n\nÇa serait quoi pour vous un investissement acceptable sur ce type de service ?`,
+        tips: ["Reprendre LEURS chiffres — pas des chiffres génériques", "Montrer le ROI avant tout : combien de temps avant rentabilisation ?", "La question 'c'est quoi un investissement acceptable' = ils se positionnent eux-mêmes", "'Investissement' pas 'dépense' — systématiquement"],
+        branches: [{ label: "→ Closing", to: 'closing-r2' }, { label: "Objection prix", to: 'objection-prix' }]
+      },
+      {
+        id: 'objection-prix', emoji: '💬', type: 'Objection prix', title: 'Objection prix',
+        script: `Je comprends la remarque — parlons-en.\n\nPour que je comprenne : est-ce que c'est le prix absolu qui pose problème, ou c'est la question du ROI — vous n'êtes pas certain que ça se rentabilise ?\n\nSi c'est le ROI : rappelez-vous qu'on a calculé [Z heures] de coordination par semaine. À [votre TJM], ça fait [montant] par mois. Notre solution coûte [prix]. Donc vous êtes en positif à partir de [durée].\n\nSi c'est le budget : est-ce qu'on peut regarder l'Offre A qui couvre l'essentiel, et on ajoute les modules si vous voyez la valeur ?`,
+        tips: ["D'abord comprendre la nature de l'objection : prix absolu ou ROI ?", "Repartir du calcul fait ensemble — ne pas recalculer", "L'offre A = porte d'entrée si budget contraint", "Jamais de réduction sans contrepartie"],
+        branches: [{ label: "→ Closing", to: 'closing-r2' }, { label: "Besoin de réfléchir", to: 'objection-reflexion-r2' }]
+      },
+      {
+        id: 'closing-r2', emoji: '🤝', type: 'Closing', title: 'Closing R2',
+        script: `Vous m'avez dit que vous avez ce chantier [nom] qui démarre dans [délai].\n\nSi vous deviez mettre la solution sur un chantier en particulier maintenant — ce serait lequel ?\n\nLes personnes que vous m'avez citées [décideur] — on devrait les impliquer dans la suite ?\n\nEcoutez, voilà ce que je vous propose : je vous envoie le devis ce soir. Si vous me le renvoyez signé avant [date], on peut être opérationnels dès le démarrage du chantier [nom]. Ça vous convient ?`,
+        tips: ["Créer l'urgence avec LEUR calendrier — pas un délai artificiel", "Nommer le chantier concret = rendre la décision réelle", "Ne jamais partir sans une date de décision confirmée", "Si signature pas possible maintenant : 'qui d'autre doit voir ça avant que vous puissiez décider ?'"],
+        branches: [{ label: "✅ Accord de principe", to: 'fin-gagne' }, { label: "Besoin de valider en interne", to: 'validation-interne' }, { label: "Refus", to: 'fin-perdu' }]
+      },
+      {
+        id: 'validation-interne', emoji: '👥', type: 'Validation interne', title: 'Validation interne',
+        script: `Pas de problème — qui d'autre doit voir cette proposition avant que vous puissiez décider ?\n\nEst-ce que vous pouvez m'organiser un échange direct avec cette personne, ou est-ce que vous préférez lui transmettre le dossier ?\n\nEt pour vous — qu'est-ce qu'il vous faudrait pour avancer de votre côté ?\n\nJe vous propose qu'on fasse un point le [date + 3 jours] — pour que vous ayez eu le temps de regarder ça avec [décideur].`,
+        tips: ["Ne jamais laisser partir sans avoir identifié l'étape suivante précise", "Proposer de rencontrer directement le décideur si possible", "Un point téléphonique dans 3 jours max — pas plus"],
+        branches: [{ label: "✅ Point prévu", to: 'fin-gagne' }]
+      },
+      {
+        id: 'objection-reflexion-r2', emoji: '🤔', type: 'Objection', title: '"Je vais réfléchir"',
+        script: `Bien sûr. Mais qu'est-ce qui vous fait douter ?\n\nEst-ce que c'est une question de prix, de timing, ou vous n'êtes pas convaincu que la solution est la bonne ?\n\nDans 3 mois, qu'est-ce qui aura changé ? Le chantier [nom] ne vous attendra pas.\n\nCe que je vous propose : on valide le principe aujourd'hui, et je vous envoie le devis ce soir. Vous avez jusqu'à [date + 5 jours] pour me le retourner. Ça vous laisse le temps de réfléchir sans perdre le créneau d'installation.`,
+        tips: ["Toujours creuser la nature du doute avant de répondre", "Utiliser l'urgence du chantier — pas une pression artificielle", "Proposer un délai de décision, pas une signature immédiate"],
+        branches: [{ label: "→ Closing", to: 'closing-r2' }, { label: "Fin — perdu", to: 'fin-perdu' }]
+      },
+      { id: 'fin-gagne', emoji: '🏆', type: 'Fin — Gagné', title: 'Deal conclu', script: `Excellent ! Je vous envoie le devis ce soir et l'invite d'installation. Bienvenue chez C.lechantier — vous allez voir la différence dès le premier chantier.\n\nUne dernière chose : est-ce que vous avez des collègues ou partenaires qui vivent les mêmes problématiques ? Une mise en contact m'aiderait beaucoup.`, tips: ["Toujours demander une référence à chaud — c'est le meilleur moment", "Envoyer devis + contrat dans les 2h", "Programmer le kick-off installation"], branches: [] },
+      { id: 'fin-perdu', emoji: '🔚', type: 'Fin — Perdu', title: 'Refus — Nurturing', script: `Je comprends tout à fait. Pas de problème.\n\nDernière question : qu'est-ce qui vous a fait décider de ne pas aller de l'avant — le prix, le timing, ou la solution en elle-même ? Je vous demande pour améliorer notre approche.\n\nEst-ce que je peux vous recontacter dans 3 mois si les conditions changent ?`, tips: ["Comprendre le vrai motif de refus = data précieuse", "Garder la relation cordiale — le marché BTP est petit", "Programmer un rappel dans 90 jours dans le CRM"], branches: [] },
+    ],
+    objections: [
+      { trigger: "On a déjà un concurrent / solution", response: "Très bien. Ce que vous avez — ça vous donne une vision automatique du terrain avec horodatage, ou c'est plus un outil de reporting saisi manuellement ? Parce que la différence en termes de preuves pour les litiges, c'est assez significatif.", tip: "Creuser la différence fonctionnelle — pas critiquer le concurrent" },
+      { trigger: "C'est trop cher", response: "Je comprends. Pour que je vous réponde précisément : c'est le prix absolu ou vous n'êtes pas certain du ROI ? Parce que si c'est le ROI, on peut revoir le calcul ensemble — avec vos propres chiffres.", tip: "D'abord comprendre la nature de l'objection" },
+      { trigger: "On n'installe pas maintenant", response: "Pas de souci. Mais le chantier [nom] démarre dans [délai] — si on n'est pas commandé avant [date], on ne pourra pas être opérationnels au démarrage. Ce que je vous propose : valider le principe maintenant, on installe quand le chantier commence.", tip: "Séparer décision et installation" },
+      { trigger: "Je dois valider avec mon supérieur", response: "Bien sûr — c'est tout à fait normal. Qui est la bonne personne à qui présenter ça ? Je peux organiser un échange de 20 minutes avec eux la semaine prochaine, ou vous préférez leur transmettre la proposition vous-même ?", tip: "Proposer d'aller directement au décideur" },
+    ]
+  },
+  {
+    id: 'r2-irve',
+    emoji: '⚡',
+    label: 'IRVE — R2 Présentation',
+    tag: 'IRVE',
+    tagClass: 'tag-irve',
+    steps: [
+      {
+        id: 'ancrage-r2', emoji: '🔁', type: 'Ancrage', title: 'Ancrage — Rappel R1',
+        script: `Bonjour [Prénom], merci d'être là. Avant de rentrer dans la présentation, je veux qu'on se replace dans notre échange précédent.\n\nVous m'aviez parlé de [X projets en simultané], de [douleur principale — coordination/déplacements], et du projet [nom] qui arrive dans [délai]. Rien n'a changé ?`,
+        tips: ["Re-créer le contexte émotionnel du R1 — il doit revivre le problème", "Si changement → adapter avant de présenter", "Ne jamais démarrer sans ancrage"],
+        branches: [{ label: "✅ Toujours d'actualité", to: 'validation-contexte' }, { label: "Changement", to: 'reancrage' }]
+      },
+      {
+        id: 'reancrage', emoji: '🔄', type: 'Reancrage', title: 'Recadrage', script: `D'accord. Qu'est-ce qui a changé ? Je veux adapter ce que je vous présente à votre situation actuelle.`, tips: ["Écouter sans défendre — adapter"], branches: [{ label: "→ Validation contexte", to: 'validation-contexte' }]
+      },
+      {
+        id: 'validation-contexte', emoji: '✅', type: 'Validation', title: 'Validation contexte',
+        script: `Pour résumer ce qu'on avait identifié :\n\n→ [X] projets en simultané, sur [zone]\n→ [Y heures/semaine] de coordination et déplacements\n→ Capacité actuelle limitée à [X projets max] sans dégradation\n→ Projet [nom] qui démarre dans [délai]\n\nC'est bien ça ? Est-ce que j'ai bien compris votre situation ?`,
+        tips: ["Reprendre les chiffres exacts du R1 — montre que vous avez écouté", "Silence après — laisser confirmer ou corriger"],
+        branches: [{ label: "→ Solution", to: 'presentation-solution' }]
+      },
+      {
+        id: 'presentation-solution', emoji: '💡', type: 'Présentation', title: 'Solution — Cas IRVE',
+        script: `Voilà comment ça fonctionne sur un projet IRVE similaire au vôtre.\n\n[Démo / cas Electra]\n\nCe que votre PM verrait sur le projet [nom] :\n→ Photos automatiques horodatées à chaque étape d'installation\n→ Plus besoin de WhatsApp — l'info remonte sans action des installateurs\n→ Dashboard global de tous vos projets depuis le bureau\n→ Historique complet en cas de contestation client\n→ Résultat Electra : +50% de projets gérés, -30% déplacements\n\nQu'est-ce que vous en pensez à chaud ?`,
+        tips: ["Démo sur LEUR cas — projet nommé", "Référence Electra = benchmark crédible", "Attendre la réaction avant de présenter le devis"],
+        branches: [{ label: "Très intéressant", to: 'retour-positif' }, { label: "Questions / doutes", to: 'retour-questions' }]
+      },
+      { id: 'retour-positif', emoji: '🌟', type: 'Signal positif', title: 'Signal positif', script: `Je suis content que ça vous parle. Est-ce que c'est bien ça que vous cherchez ? Si vous aviez eu cette solution sur votre dernier projet [nom cité au R1] — qu'est-ce que ça aurait changé ?`, tips: ["Projection dans le bénéfice", "Attendre sa réponse — ne pas enchaîner"], branches: [{ label: "→ Offres / Devis", to: 'presentation-offres' }] },
+      { id: 'retour-questions', emoji: '❓', type: 'Questions / Doutes', title: 'Traiter les doutes', script: `Bien sûr — posez vos questions. C'est pour ça qu'on est là.\n\n[Traiter]\n\nMaintenant qu'on a éclairci ça — est-ce que vous voyez comment cette solution répondrait à votre besoin de visibilité sur [X] projets en simultané ?`, tips: ["Traiter une question à la fois", "Revenir toujours à leur besoin spécifique"], branches: [{ label: "→ Offres / Devis", to: 'presentation-offres' }] },
+      {
+        id: 'presentation-offres', emoji: '📋', type: 'Présentation offres', title: 'Offres A / B / C',
+        script: `Voilà les 3 formules que j'ai préparées pour le projet [nom].\n\n[Présenter Offre A → B → C]\n\nLaquelle est la plus proche de ce que vous cherchez ?`,
+        tips: ["3 offres — logique d'ancrage", "Présenter dans l'ordre croissant", "Laisser choisir sans recommander d'emblée"],
+        branches: [{ label: "→ Défense prix", to: 'defense-prix' }, { label: "Objection prix", to: 'objection-prix' }]
+      },
+      {
+        id: 'defense-prix', emoji: '⚖️', type: 'ROI', title: 'ROI — Mise en perspective',
+        script: `Si on reprend nos calculs :\n\n→ [Z heures/semaine] de coordination = [€/mois]\n→ Votre limite actuelle = [X projets max]\n→ Avec notre solution → [X + 50%] projets possibles sans recrutement\n→ Notre solution pour ce projet = [prix]\n\nSur ce projet vous êtes rentabilisés en [durée]. Et à terme — si vous absorbez 50% de projets supplémentaires, l'impact chiffre d'affaires représente combien pour vous ?\n\nC'est quoi pour vous un investissement acceptable sur ce type de service ?`,
+        tips: ["Projeter sur le CA additionnel possible = argument puissant pour IRVE", "La question 'investissement acceptable' = ancre psychologique", "'Investissement' jamais 'coût' ou 'dépense'"],
+        branches: [{ label: "→ Closing", to: 'closing-r2' }, { label: "Objection prix", to: 'objection-prix' }]
+      },
+      { id: 'objection-prix', emoji: '💬', type: 'Objection prix', title: 'Objection prix', script: `C'est le prix absolu ou le ROI qui n'est pas clair ?\n\nSi ROI : on a calculé [Z heures] par semaine à [valeur]. La solution coûte [prix]. Vous êtes positif à partir de [délai].\n\nSi budget contraint : est-ce qu'on regarde l'Offre A pour démarrer sur ce projet, et on voit ensemble si ça se justifie d'aller plus loin ?`, tips: ["Comprendre d'abord la nature de l'objection", "L'Offre A = porte d'entrée, pas un rabais"], branches: [{ label: "→ Closing", to: 'closing-r2' }, { label: "Besoin de réfléchir", to: 'objection-reflexion-r2' }] },
+      {
+        id: 'closing-r2', emoji: '🤝', type: 'Closing', title: 'Closing R2',
+        script: `Votre projet [nom] démarre dans [délai]. Pour être opérationnel dès le premier jour, il faut qu'on soit commandés avant [date - 5 jours].\n\nSi vous deviez démarrer avec un projet — ce serait lequel ?\n\nEst-ce que les personnes qu'on a citées [décideur] doivent valider avant la signature ?\n\nJe vous envoie le devis ce soir. Si vous me le confirmez avant [date], on démarre à temps.`,
+        tips: ["L'urgence = leur calendrier de projet, pas une pression artificielle", "Nommer le projet = décision concrète, pas abstraite", "Identifier si quelqu'un doit encore valider"],
+        branches: [{ label: "✅ Accord de principe", to: 'fin-gagne' }, { label: "Validation interne", to: 'validation-interne' }, { label: "Refus", to: 'fin-perdu' }]
+      },
+      { id: 'validation-interne', emoji: '👥', type: 'Validation interne', title: 'Validation interne', script: `Pas de problème. Qui d'autre doit valider ?\n\nEst-ce que vous pouvez m'organiser un échange de 20 minutes avec cette personne, ou vous préférez lui soumettre la proposition ?\n\nOn fait un point le [date + 3 jours] ?`, tips: ["Toujours proposer de rencontrer le décideur directement", "3 jours max entre R2 et relance"], branches: [{ label: "✅ Point prévu", to: 'fin-gagne' }] },
+      { id: 'objection-reflexion-r2', emoji: '🤔', type: 'Objection', title: '"Je vais réfléchir"', script: `D'accord. Qu'est-ce qui vous fait douter — le prix, le timing, ou la solution ?\n\nDans 3 mois, le projet [nom] sera déjà en cours — peut-être trop tard. Ce que je vous propose : valider le principe aujourd'hui, vous avez jusqu'à [date] pour me retourner le devis signé.`, tips: ["Creuser le doute avant de répondre", "Utiliser LEUR deadline de projet"], branches: [{ label: "→ Closing", to: 'closing-r2' }, { label: "Fin perdu", to: 'fin-perdu' }] },
+      { id: 'fin-gagne', emoji: '🏆', type: 'Fin — Gagné', title: 'Deal conclu', script: `Excellent ! Devis et contrat ce soir. Kick-off installation la semaine prochaine.\n\nBienvenue chez C.lechantier — Electra nous a dit que la différence se voit dès le premier mois.\n\nDernière chose : vous avez des collègues PMs qui rencontrent les mêmes défis ? Une mise en contact m'aiderait beaucoup.`, tips: ["Demander une référence à chaud", "Envoyer devis + contrat sous 2h", "Programmer kick-off"], branches: [] },
+      { id: 'fin-perdu', emoji: '🔚', type: 'Fin — Perdu', title: 'Refus — Nurturing', script: `Je comprends. Pour améliorer notre approche — qu'est-ce qui vous a fait décider de ne pas aller de l'avant ?\n\nEst-ce que je peux vous recontacter dans 3 mois si les conditions changent ?`, tips: ["Comprendre le motif réel = data commerciale", "Programmer rappel dans 90 jours", "Rester cordial"], branches: [] },
+    ],
+    objections: [
+      { trigger: "On a déjà un outil de suivi", response: "Cet outil vous donne une vision automatique de chaque chantier, sans que les installateurs aient à saisir quoi que ce soit ? Parce que la valeur principale de ce qu'on fait, c'est exactement ça : zéro dépendance humaine pour la remontée d'info.", tip: "Pointer la différence : automatique vs manuel" },
+      { trigger: "C'est trop cher", response: "C'est le prix absolu ou le ROI qui n'est pas clair pour vous ? Parce qu'avec vos chiffres — [X heures] par semaine — vous êtes rentabilisés en [durée]. Je veux qu'on soit alignés là-dessus avant d'aller plus loin.", tip: "Comprendre la nature de l'objection avant de répondre" },
+      { trigger: "On verra pour le prochain projet", response: "Je comprends. Mais le projet [nom] démarre dans [délai] — si on attend le suivant, ça repousse d'autant la valeur générée. Et ça ne prend que 5 jours entre la commande et la mise en place. Qu'est-ce qui bloque vraiment ?", tip: "Concrétiser sur le projet identifié" },
+    ]
+  }
+];
+
+// =====================================================================
+// ENGINE — GENERIC MODULE RENDERER
+// =====================================================================
+let modules = {
+  cc: { personas: CC_PERSONAS, current: 0, currentStep: 0, visited: new Set([0]) },
+  r1: { personas: R1_PERSONAS, current: 0, currentStep: 0, visited: new Set([0]) },
+  r2: { personas: R2_PERSONAS, current: 0, currentStep: 0, visited: new Set([0]) },
+};
+let activeModule = 'cc';
+
+function switchModule(m) {
+  document.querySelectorAll('.module').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.module-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('module-' + m).classList.add('active');
+  document.getElementById('btn-' + m).classList.add('active');
+  activeModule = m;
+  renderModule(m);
+}
+
+function getMod() { return modules[activeModule]; }
+function getPersonas() { return getMod().personas; }
+function getPersona() { return getPersonas()[getMod().current]; }
+function getSteps() { return getPersona().steps; }
+function getStep() { return getSteps()[getMod().currentStep]; }
+
+function renderModule(m) {
+  activeModule = m;
+  renderPersonaNav(m);
+  renderSidebar(m);
+  renderContent(m);
+}
+
+function renderPersonaNav(m) {
+  const mod = modules[m];
+  const personas = mod.personas;
+  const nav = document.getElementById(m + '-persona-nav');
+  nav.innerHTML = personas.map((p, i) => `
+    <button class="persona-btn ${i === mod.current ? 'active' : ''}" onclick="selectPersona('${m}', ${i})">
+      ${p.emoji} ${p.label}
+      <span class="persona-tag ${p.tagClass}">${p.tag}</span>
+    </button>
+  `).join('');
+}
+
+function selectPersona(m, i) {
+  modules[m].current = i;
+  modules[m].currentStep = 0;
+  modules[m].visited = new Set([0]);
+  renderModule(m);
+}
+
+function renderSidebar(m) {
+  const mod = modules[m];
+  const steps = modules[m].personas[mod.current].steps;
+  const sb = document.getElementById(m + '-sidebar');
+  sb.innerHTML = steps.map((step, i) => `
+    <div class="step-item ${i === mod.currentStep ? 'active' : ''} ${mod.visited.has(i) && i !== mod.currentStep ? 'completed' : ''}"
+         onclick="goToStep('${m}', '${step.id}')">
+      <div class="step-circle">${mod.visited.has(i) && i !== mod.currentStep ? '✓' : (i + 1)}</div>
+      <div class="step-info">
+        <div class="step-label">${step.type}</div>
+        <div class="step-title">${step.title}</div>
+      </div>
+      ${i < steps.length - 1 ? '<div class="step-connector"></div>' : ''}
+    </div>
+  `).join('');
+  // Progress
+  const pct = Math.round((mod.visited.size / steps.length) * 100);
+  const pbar = document.getElementById(m + '-progress');
+  if (pbar) pbar.querySelector ? null : null;
+  document.getElementById(m + '-progress').style.width = pct + '%';
+}
+
+function goToStep(m, id) {
+  const steps = modules[m].personas[modules[m].current].steps;
+  const idx = steps.findIndex(s => s.id === id);
+  if (idx === -1) return;
+  modules[m].currentStep = idx;
+  modules[m].visited.add(idx);
+  renderSidebar(m);
+  renderContent(m);
+  document.getElementById(m + '-content').scrollTop = 0;
+}
+
+function renderContent(m) {
+  const mod = modules[m];
+  const persona = mod.personas[mod.current];
+  const step = persona.steps[mod.currentStep];
+  const steps = persona.steps;
+  const prevStep = mod.currentStep > 0 ? steps[mod.currentStep - 1] : null;
+  const nextStep = mod.currentStep < steps.length - 1 ? steps[mod.currentStep + 1] : null;
+  const content = document.getElementById(m + '-content');
+
+  const scriptHtml = step.script ? step.script.replace(/\n/g, '<br>') : '';
+
+  const objections = persona.objections || [];
+  const showObjOnStep = ['closing','pitch','difficultes','cloture-r1','closing-r2','presentation-offres'];
+  const objHtml = objections.length && (showObjOnStep.includes(step.id) || step.branches.length === 0)
+    ? `<div style="margin-top:28px;padding-top:22px;border-top:1px solid var(--border)">
+        <div class="branches-label">🛡 Objections fréquentes</div>
+        <div class="objections-grid">
+          ${objections.map((o, i) => `
+            <div class="objection-card">
+              <div class="objection-trigger" onclick="toggleObjM('${m}',${i})">
+                <span>${o.trigger}</span><span class="objection-badge">Réponse</span>
+              </div>
+              <div class="objection-body" id="${m}-obj-${i}">
+                <div class="objection-response">${o.response}</div>
+                ${o.tip ? `<div class="objection-tip">💡 ${o.tip}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : '';
+
+  content.innerHTML = `
+    <div class="step-view active">
+      <div class="step-header">
+        <div class="step-emoji-big">${step.emoji}</div>
+        <div>
+          <div class="step-type">${step.type}</div>
+          <div class="step-name">${step.title}</div>
+        </div>
+      </div>
+
+      ${step.script ? `
+      <div class="script-box" id="${m}-script-box">
+        <div class="script-box-label">📝 Ce que vous dites</div>
+        <button class="edit-btn" id="${m}-edit-btn" onclick="toggleEditMode('${m}')">✏️ Modifier</button>
+        <button class="copy-btn" onclick="copyScript('${m}')">Copier</button>
+        <div class="script-text" id="${m}-script-text">${scriptHtml}</div>
+        <div class="edit-hint" id="${m}-edit-hint" style="display:none">Les modifications sont sauvegardées en mémoire</div>
+      </div>
+      ` : ''}
+
+      ${step.checklist ? `
+        <div class="section-title">Checklist</div>
+        <div class="checklist">
+          ${step.checklist.map((q, i) => `
+            <div class="check-item" id="${m}-chk-${i}" onclick="toggleCheck('${m}',${i})">
+              <div class="check-box" id="${m}-chkbox-${i}"></div>
+              <span>${q}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      ${step.tips && step.tips.length > 0 ? `
+      <div class="tips-box">
+        <div class="tips-label">💡 Conseils</div>
+        ${step.tips.map(t => `<div class="tip-item"><span class="tip-dot">→</span><span>${t}</span></div>`).join('')}
+      </div>
+      ` : ''}
+
+      ${step.branches && step.branches.length > 0 ? `
+        <div class="branches-label">RÉPONSE DU PROSPECT →</div>
+        <div class="branches">
+          ${step.branches.map(b => `
+            <button class="branch-btn" onclick="goToStep('${m}','${b.to}')">
+              ${b.label}<span class="branch-arrow">→</span>
+            </button>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      ${objHtml}
+
+      <!-- EDIT PANEL -->
+      <div class="edit-panel" id="${m}-edit-panel">
+        <div class="edit-panel-title">✏️ Modifier cette étape</div>
+
+        <div class="edit-section">
+          <div class="edit-label">Titre de l'étape</div>
+          <input class="edit-input" id="${m}-ep-title" value="${(step.title||'').replace(/"/g,'&quot;')}">
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Type / label</div>
+          <input class="edit-input" id="${m}-ep-type" value="${(step.type||'').replace(/"/g,'&quot;')}">
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Script (ce que vous dites)</div>
+          <textarea class="edit-textarea" id="${m}-ep-script" style="min-height:120px">${(step.script||'').replace(/<em>/g,'').replace(/<\/em>/g,'').replace(/<br>/g,'\n')}</textarea>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Conseils (tips)</div>
+          <div id="${m}-ep-tips-list">
+            ${(step.tips||[]).map((t,i) => `
+              <div class="edit-list-item" id="${m}-tip-row-${i}">
+                <input value="${t.replace(/"/g,'&quot;')}">
+                <button class="edit-del-btn" onclick="this.parentElement.remove()">🗑</button>
+              </div>`).join('')}
+          </div>
+          <button class="edit-add-btn" onclick="addTipM('${m}')">+ Ajouter un conseil</button>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Checklist</div>
+          <div id="${m}-ep-checklist-list">
+            ${(step.checklist||[]).map((q,i) => `
+              <div class="edit-list-item" id="${m}-chkl-row-${i}">
+                <input value="${q.replace(/"/g,'&quot;')}">
+                <button class="edit-del-btn" onclick="this.parentElement.remove()">🗑</button>
+              </div>`).join('')}
+          </div>
+          <button class="edit-add-btn" onclick="addChecklistM('${m}')">+ Ajouter une question</button>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Branches (réponses prospect)</div>
+          <div id="${m}-ep-branches-list">
+            ${(step.branches||[]).map((b,i) => `
+              <div class="edit-list-item" id="${m}-branch-row-${i}">
+                <input placeholder="Label" value="${b.label.replace(/"/g,'&quot;')}">
+                <input class="branch-target-input" placeholder="→ étape" value="${b.to}" style="width:90px;flex:none">
+                <button class="edit-del-btn" onclick="this.parentElement.remove()">🗑</button>
+              </div>`).join('')}
+          </div>
+          <button class="edit-add-btn" onclick="addBranchM('${m}')">+ Ajouter une branche</button>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Objections (panel de ce persona)</div>
+          <div id="${m}-ep-obj-list">
+            ${(persona.objections||[]).map((o,i) => `
+              <div id="${m}-obj-row-${i}" style="display:flex;flex-direction:column;gap:6px;background:var(--surface2);padding:10px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px">
+                <div style="display:flex;gap:8px;align-items:center">
+                  <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;width:55px;flex-shrink:0">Trigger</span>
+                  <input style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--bg);outline:none" value="${o.trigger.replace(/"/g,'&quot;')}">
+                  <button class="edit-del-btn" onclick="this.closest('[id]').remove()">🗑</button>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start">
+                  <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;width:55px;flex-shrink:0;margin-top:8px">Réponse</span>
+                  <textarea style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--bg);outline:none;min-height:55px;resize:vertical">${o.response}</textarea>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;width:55px;flex-shrink:0">Conseil</span>
+                  <input style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--bg);outline:none" value="${(o.tip||'').replace(/"/g,'&quot;')}">
+                </div>
+              </div>`).join('')}
+          </div>
+          <button class="edit-add-btn" onclick="addObjM('${m}')">+ Ajouter une objection</button>
+        </div>
+        <button class="edit-save-btn" onclick="saveEditPanelM('${m}')">✅ Sauvegarder toutes les modifications</button>
+        <div class="edit-step-actions">
+          <button class="edit-danger-btn" onclick="deleteStepM('${m}')">🗑 Supprimer cette étape</button>
+          <button class="edit-add-btn" style="margin-top:0;border-style:dashed;width:auto" onclick="addStepAfterM('${m}')">+ Ajouter une étape après</button>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        ${prevStep ? `<button class="nav-btn nav-prev" onclick="goToStep('${m}','${prevStep.id}')">← ${prevStep.title}</button>` : ''}
+        <button class="nav-btn nav-reset" onclick="resetModule('${m}')">↺ Recommencer</button>
+        <button class="nav-btn nav-edit" id="${m}-nav-edit-btn" onclick="toggleEditPanel('${m}')">✏️ Modifier l'étape</button>
+        ${nextStep ? `<button class="nav-btn nav-next" onclick="goToStep('${m}','${nextStep.id}')">Suivant →</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function toggleCheck(m, i) {
+  const item = document.getElementById(`${m}-chk-${i}`);
+  const box  = document.getElementById(`${m}-chkbox-${i}`);
+  item.classList.toggle('checked');
+  box.textContent = item.classList.contains('checked') ? '✓' : '';
+}
+
+function toggleObjM(m, i) {
+  document.getElementById(`${m}-obj-${i}`)?.classList.toggle('open');
+}
+
+function copyScript(m) {
+  const el = document.getElementById(`${m}-script-text`);
+  if (!el) return;
+  const txt = el.innerText || '';
+  navigator.clipboard.writeText(txt).then(() => {
+    toast('Script copié ✓');
+  });
+}
+
+function resetModule(m) {
+  modules[m].currentStep = 0;
+  modules[m].visited = new Set([0]);
+  renderSidebar(m);
+  renderContent(m);
+}
+
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast-el';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
+}
+
+// =====================================================================
+// EDITOR FUNCTIONS
+// =====================================================================
+function toggleEditMode(m) {
+  const scriptText = document.getElementById(`${m}-script-text`);
+  const editBtn    = document.getElementById(`${m}-edit-btn`);
+  const editHint   = document.getElementById(`${m}-edit-hint`);
+  if (!scriptText || !editBtn) return;
+  const isEditing = editBtn.classList.contains('active');
+  if (!isEditing) {
+    const current = scriptText.innerText;
+    scriptText.style.display = 'none';
+    const ta = document.createElement('textarea');
+    ta.className = 'script-textarea'; ta.id = `${m}-script-editor`; ta.value = current;
+    scriptText.parentNode.insertBefore(ta, scriptText.nextSibling);
+    ta.focus();
+    editBtn.textContent = '✅ Sauvegarder'; editBtn.classList.add('active');
+    if (editHint) editHint.style.display = 'block';
+  } else {
+    const ta = document.getElementById(`${m}-script-editor`);
+    if (ta) {
+      modules[m].personas[modules[m].current].steps[modules[m].currentStep].script = ta.value.trim();
+      scriptText.innerHTML = ta.value.trim().replace(/\n/g,'<br>');
+      scriptText.style.display = ''; ta.remove();
+    }
+    editBtn.textContent = '✏️ Modifier'; editBtn.classList.remove('active');
+    if (editHint) editHint.style.display = 'none';
+    toast('Script sauvegardé ✓');
+  }
+}
+
+function toggleEditPanel(m) {
+  const panel = document.getElementById(`${m}-edit-panel`);
+  const btn   = document.getElementById(`${m}-nav-edit-btn`);
+  if (!panel) return;
+  const isOpen = panel.classList.toggle('open');
+  if (btn) {
+    btn.textContent = isOpen ? "✖ Fermer l'éditeur" : '✏️ Modifier l\'étape';
+    btn.classList.toggle('editing', isOpen);
+  }
+  if (isOpen) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function addTipM(m) {
+  const list = document.getElementById(`${m}-ep-tips-list`);
+  const row = document.createElement('div');
+  row.className = 'edit-list-item';
+  row.innerHTML = `<input placeholder="Nouveau conseil..."><button class="edit-del-btn" onclick="this.parentElement.remove()">🗑</button>`;
+  list.appendChild(row);
+}
+
+function addChecklistM(m) {
+  const list = document.getElementById(`${m}-ep-checklist-list`);
+  const row = document.createElement('div');
+  row.className = 'edit-list-item';
+  row.innerHTML = `<input placeholder="Nouvelle question..."><button class="edit-del-btn" onclick="this.parentElement.remove()">🗑</button>`;
+  list.appendChild(row);
+}
+
+function addBranchM(m) {
+  const list = document.getElementById(`${m}-ep-branches-list`);
+  const row = document.createElement('div');
+  row.className = 'edit-list-item';
+  row.innerHTML = `<input placeholder="Label de la réponse..."><input style="width:90px;flex:none;padding:7px 8px;border:1.5px solid var(--border);border-radius:7px;font-size:11px;color:var(--muted);background:var(--bg);outline:none" placeholder="→ id étape"><button class="edit-del-btn" onclick="this.parentElement.remove()">🗑</button>`;
+  list.appendChild(row);
+}
+
+function addObjM(m) {
+  const list = document.getElementById(`${m}-ep-obj-list`);
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;flex-direction:column;gap:6px;background:var(--surface2);padding:10px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px';
+  div.innerHTML = `
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;width:55px;flex-shrink:0">Trigger</span>
+      <input style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--bg);outline:none" placeholder="L'objection...">
+      <button class="edit-del-btn" onclick="this.closest('div[style]').remove()">🗑</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:flex-start">
+      <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;width:55px;flex-shrink:0;margin-top:8px">Réponse</span>
+      <textarea style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--bg);outline:none;min-height:55px;resize:vertical" placeholder="La réponse..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;width:55px;flex-shrink:0">Conseil</span>
+      <input style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--bg);outline:none" placeholder="Conseil optionnel...">
+    </div>`;
+  list.appendChild(div);
+}
+
+function saveEditPanelM(m) {
+  const mod = modules[m];
+  const step = mod.personas[mod.current].steps[mod.currentStep];
+  const persona = mod.personas[mod.current];
+
+  step.title = document.getElementById(`${m}-ep-title`)?.value.trim() || step.title;
+  step.type  = document.getElementById(`${m}-ep-type`)?.value.trim()  || step.type;
+
+  const newScript = document.getElementById(`${m}-ep-script`)?.value.trim();
+  if (newScript !== undefined) step.script = newScript;
+
+  const tipInputs = document.querySelectorAll(`#${m}-ep-tips-list .edit-list-item input`);
+  step.tips = Array.from(tipInputs).map(i => i.value.trim()).filter(Boolean);
+
+  const chklInputs = document.querySelectorAll(`#${m}-ep-checklist-list .edit-list-item input`);
+  const chkl = Array.from(chklInputs).map(i => i.value.trim()).filter(Boolean);
+  if (chkl.length) step.checklist = chkl; else delete step.checklist;
+
+  const branchRows = document.querySelectorAll(`#${m}-ep-branches-list .edit-list-item`);
+  step.branches = Array.from(branchRows).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { label: inputs[0]?.value.trim()||'', to: inputs[1]?.value.trim()||'' };
+  }).filter(b => b.label);
+
+  const objRows = document.querySelectorAll(`#${m}-ep-obj-list > div`);
+  persona.objections = Array.from(objRows).map(row => {
+    const inputs = row.querySelectorAll('input');
+    const ta = row.querySelector('textarea');
+    return { trigger: inputs[0]?.value.trim()||'', response: ta?.value.trim()||'', tip: inputs[1]?.value.trim()||'' };
+  }).filter(o => o.trigger);
+
+  renderSidebar(m);
+  renderContent(m);
+  setTimeout(() => { toggleEditPanel(m); toast('✅ Modifications sauvegardées'); }, 50);
+}
+
+function deleteStepM(m) {
+  const mod = modules[m];
+  const steps = mod.personas[mod.current].steps;
+  if (steps.length <= 1) { toast('Impossible — il faut au moins une étape'); return; }
+  if (!confirm('Supprimer cette étape ?')) return;
+  steps.splice(mod.currentStep, 1);
+  mod.currentStep = Math.max(0, mod.currentStep - 1);
+  renderSidebar(m); renderContent(m);
+  toast('Étape supprimée');
+}
+
+function addStepAfterM(m) {
+  const mod = modules[m];
+  const steps = mod.personas[mod.current].steps;
+  const newStep = {
+    id: 'etape-' + Date.now(), emoji: '🆕', type: 'Nouvelle étape',
+    title: 'Nouvelle étape', script: 'Votre script ici...', tips: [], branches: []
+  };
+  steps.splice(mod.currentStep + 1, 0, newStep);
+  mod.currentStep = mod.currentStep + 1;
+  mod.visited.add(mod.currentStep);
+  renderSidebar(m); renderContent(m);
+  setTimeout(() => toggleEditPanel(m), 50);
+  toast("Étape ajoutée — modifiez-la dans l'éditeur");
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+renderModule('cc');
+renderModule('r1');
+renderModule('r2');
+</script>
+</body>
+</html>
